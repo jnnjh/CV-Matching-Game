@@ -1,0 +1,24 @@
+# Run with: docker compose up -d
+# Stop with: docker compose down
+# Wipe data:  docker compose down -v
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: CV-Matching-Game-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: appdb
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

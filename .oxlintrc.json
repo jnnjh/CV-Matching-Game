@@ -1,0 +1,41 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "settings": {
+    "react": {
+      "version": "19.0.0"
+    }
+  },
+  "overrides": [
+    {
+      "files": ["frontend/src/**"],
+      "plugins": ["react", "jsx-a11y", "oxc", "import", "vitest"],
+      "env": {
+        "browser": true,
+        "es2022": true
+      },
+      "rules": {
+        "react/react-in-jsx-scope": "off",
+        "jsx-a11y/aria-role": "off",
+        "import/no-unassigned-import": "off",
+        "vitest/require-mock-type-parameters": "off"
+      }
+    },
+    {
+      "files": ["backend/src/**"],
+      "plugins": ["oxc", "import", "vitest"],
+      "env": {
+        "node": true,
+        "es2022": true
+      },
+      "rules": {
+        "import/no-unassigned-import": "off",
+        "oxc/no-async-endpoint-handlers": "off",
+        "vitest/require-mock-type-parameters": "off"
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "CV-Matching-Game",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CV-Matching-Game — MigraCode fullstack project",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
+    "build": "npm run build --prefix frontend && npm run build --prefix backend",
+    "lint": "oxlint frontend/src backend/src",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "test": "npm run test --prefix frontend && npm run test --prefix backend"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3",
+    "oxfmt": "^0.54.0",
+    "oxlint": "^1.69.0"
+  },
+  "volta": {
+    "node": "24.16.0",
+    "npm": "11.13.0"
+  }
+}
