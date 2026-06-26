@@ -10,16 +10,20 @@ function CreateGamePage() {
   const [gameCode, setGameCode] = useState('')
 
   async function handleCreateGame() {
-    const response = await fetch('http://localhost:3000/api/games', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name }),
-    })
+    try {
+      const response = await fetch('http://localhost:3000/api/games', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: name }),
+      })
 
-    const data = await response.json()
-    setGameCode(data.game_code)
+      const data = await response.json()
+      setGameCode(data.game_code)
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   return (
