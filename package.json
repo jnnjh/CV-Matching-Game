@@ -14,7 +14,9 @@
   "devDependencies": {
     "concurrently": "^10.0.3",
     "oxfmt": "^0.54.0",
-    "oxlint": "^1.69.0"
+    "oxlint": "^1.69.0",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.9"
   },
   "volta": {
     "node": "24.16.0",
