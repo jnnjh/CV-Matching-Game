@@ -15,6 +15,7 @@ function RootLayout() {
         <Link to="/" activeProps={{ className: styles.navLinkActive }} className={styles.navLink}>
           Home
         </Link>
+        
         <Link
           to="/about"
           activeProps={{ className: styles.navLinkActive }}
@@ -22,6 +23,7 @@ function RootLayout() {
         >
           About
         </Link>
+
         <Link
           to="/users"
           activeProps={{ className: styles.navLinkActive }}
@@ -29,6 +31,15 @@ function RootLayout() {
         >
           Users
         </Link>
+
+        <Link
+          to="/create-game"
+          activeProps={{ className: styles.navLinkActive }}
+          className={styles.navLink}
+        >
+          Create Game
+        </Link>
+        
       </nav>
 
       {/* Outlet renders the matched child route */}
