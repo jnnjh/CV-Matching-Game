@@ -39,8 +39,9 @@ function JoinComponent() {
       setSuccess(true);
       console.log('Joined game:', result);
       
+      // Redirect to lobby after joining
       setTimeout(() => {
-        // navigate({ to: `/game/${result.game.id}` });
+        navigate({ to: `/lobby/${result.game.id}` });
       }, 1500);
     } catch (err) {
       setError(err.message);
@@ -129,7 +130,6 @@ function JoinComponent() {
   );
 }
 
-// This is the important part - exporting the Route
 export const Route = createFileRoute('/join')({
   component: JoinComponent,
 });
