@@ -1,9 +1,12 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/join-game')({
-  component: RouteComponent,
+  beforeLoad: ({ search }) => {
+    const code = search?.code || ''
+    
+    throw redirect({
+      to: '/join',
+      search: { code },
+    })
+  },
 })
-
-function RouteComponent() {
-  return <div>Hello "/join-game"!</div>
-}
