@@ -1,34 +1,149 @@
-// This migration creates the initial schema and seeds demo data.
-// Run it with: npm run migrate
-//
-// To add a new table or column, create a new migration file:
-//   npm run migrate:create -- my-new-feature
-//
-// Alternatives to node-pg-migrate:
-//   - Prisma (ORM + migrations):  https://www.prisma.io
-//   - Drizzle (lightweight ORM):  https://orm.drizzle.team
-
-/** @type {import('node-pg-migrate').ColumnDefinitions | undefined} */
 export const shorthands = undefined
 
-/** @param {import('node-pg-migrate').MigrationBuilder} pgm */
 export const up = (pgm) => {
-  pgm.createTable('users', {
-    id: { type: 'serial', primaryKey: true },
-    name: { type: 'text', notNull: true },
-    role: { type: 'text', notNull: true },
+  pgm.createExtension('pgcrypto', { ifNotExists: true })
+
+  // GAMES
+  pgm.createTable('games', {
+    id: {
+      type: 'uuid',
+      primaryKey: true,
+      default: pgm.func('gen_random_uuid()'),
+    },
+    game_code: {
+      type: 'varchar(10)',
+      notNull: true,
+      unique: true,
+    },
+    password: {
+      type: 'text',
+      notNull: true,
+    },
+    status: {
+      type: 'varchar(20)',
+      notNull: true,
+      default: 'waiting',
+    },
+    current_round: {
+      type: 'integer',
+      notNull: true,
+      default: 1,
+    },
+    created_at: {
+      type: 'timestamp',
+      default: pgm.func('current_timestamp'),
+    },
+    expires_at: {
+      type: 'timestamp',
+      notNull: true,
+    },
   })
 
-  // Seed demo data — remove or replace for your own project
-  pgm.sql(`
-    INSERT INTO users (name, role) VALUES
-      ('Alice García', 'Frontend Developer'),
-      ('Bob Mwangi', 'Backend Developer'),
-      ('Carmen Liu', 'Fullstack Developer')
-  `)
+  // USERS
+  pgm.createTable('users', {
+    id: {
+      type: 'uuid',
+      primaryKey: true,
+      default: pgm.func('gen_random_uuid()'),
+    },
+    game_id: {
+      type: 'uuid',
+      notNull: true,
+      references: 'games(id)',
+      onDelete: 'CASCADE',
+    },
+    name: {
+      type: 'varchar(100)',
+      notNull: true,
+    },
+    photo_url: {
+      type: 'text',
+    },
+    is_host: {
+      type: 'boolean',
+      default: false,
+    },
+    joined_at: {
+      type: 'timestamp',
+      default: pgm.func('current_timestamp'),
+    },
+  })
+
+  // STATEMENTS
+  pgm.createTable('statements', {
+    id: {
+      type: 'uuid',
+      primaryKey: true,
+      default: pgm.func('gen_random_uuid()'),
+    },
+    game_id: {
+      type: 'uuid',
+      notNull: true,
+      references: 'games(id)',
+      onDelete: 'CASCADE',
+    },
+    user_id: {
+      type: 'uuid',
+      notNull: true,
+      references: 'users(id)',
+      onDelete: 'CASCADE',
+      unique: true,
+    },
+    content: {
+      type: 'text',
+      notNull: true,
+    },
+    round_order: {
+      type: 'integer',
+      notNull: true,
+    },
+  })
+
+  // VOTES
+  pgm.createTable('votes', {
+    id: {
+      type: 'uuid',
+      primaryKey: true,
+      default: pgm.func('gen_random_uuid()'),
+    },
+    game_id: {
+      type: 'uuid',
+      notNull: true,
+      references: 'games(id)',
+      onDelete: 'CASCADE',
+    },
+    statement_id: {
+      type: 'uuid',
+      notNull: true,
+      references: 'statements(id)',
+      onDelete: 'CASCADE',
+    },
+    voter_id: {
+      type: 'uuid',
+      notNull: true,
+      references: 'users(id)',
+      onDelete: 'CASCADE',
+    },
+    guessed_user_id: {
+      type: 'uuid',
+      notNull: true,
+      references: 'users(id)',
+      onDelete: 'CASCADE',
+    },
+    created_at: {
+      type: 'timestamp',
+      default: pgm.func('current_timestamp'),
+    },
+  })
+
+  pgm.addConstraint('votes', 'unique_vote_per_round', {
+    unique: ['statement_id', 'voter_id'],
+  })
 }
 
-/** @param {import('node-pg-migrate').MigrationBuilder} pgm */
 export const down = (pgm) => {
+  pgm.dropTable('votes')
+  pgm.dropTable('statements')
   pgm.dropTable('users')
+  pgm.dropTable('games')
 }
