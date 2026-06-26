@@ -9,6 +9,7 @@ export const Route = createFileRoute('/create-game')({
 function CreateGamePage() {
   const [name, setName] = useState('')
   const [gameCode, setGameCode] = useState('')
+  const joinUrl = gameCode ? `http://localhost:5173/join-game?code=${gameCode}` : ''
 
   async function handleCreateGame() {
     const response = await fetch('http://localhost:3000/api/games', {
