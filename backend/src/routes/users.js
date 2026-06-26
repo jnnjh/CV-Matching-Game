@@ -17,7 +17,7 @@ userRoutes.get('/', async (_req, res) => {
 
 userRoutes.get('/:id', async (req, res) => {
   try {
-    const user = await getUserById(Number(req.params.id))
+    const user = await getUserById(req.params.id)
     if (!user) return res.status(404).json({ error: 'User not found' })
     res.json(user)
   } catch (err) {
