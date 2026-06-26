@@ -1,5 +1,6 @@
 import express from 'express'
 import { userRoutes } from './routes/users.js'
+import { gameRoutes } from './routes/games.js'
 
 export const app = express()
 
@@ -24,3 +25,5 @@ app.get('/api/health', (_req, res) => {
     timestamp: new Date().toISOString(),
   })
 })
+
+app.use('/api/games', gameRoutes)
