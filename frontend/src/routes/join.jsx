@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router';
 import { joinGame } from '../api/players';
 import styles from './join.module.css';
 
 function JoinComponent() {
   const navigate = useNavigate();
+  const search = useSearch({ from: '/join' });
+  const gameCodeFromUrl = search?.code || '';
+  
   const [formData, setFormData] = useState({
-    gameCode: '',
+    gameCode: gameCodeFromUrl,
     name: '',
     photo: null
   });
@@ -126,6 +129,7 @@ function JoinComponent() {
   );
 }
 
+// This is the important part - exporting the Route
 export const Route = createFileRoute('/join')({
   component: JoinComponent,
 });
