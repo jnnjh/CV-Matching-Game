@@ -1,7 +1,12 @@
+import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { createGame } from '../api/games'
 
-export default function CreateGamePage() {
+export const Route = createFileRoute('/create-game')({
+  component: CreateGamePage,
+})
+
+function CreateGamePage() {
   const [password, setPassword] = useState('')
   const [gameCode, setGameCode] = useState('')
 
