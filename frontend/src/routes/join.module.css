@@ -1,0 +1,124 @@
+.container {
+  max-width: 480px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+.title {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 32px;
+  color: #333;
+}
+
+.form {
+  background: white;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #555;
+  font-size: 14px;
+}
+
+.required {
+  color: #e74c3c;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #4a90d9;
+}
+
+.fileInput {
+  width: 100%;
+  padding: 10px 0;
+}
+
+.fileInput::file-selector-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #f0f0f0;
+  color: #333;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.fileInput::file-selector-button:hover {
+  background: #e0e0e0;
+}
+
+.error {
+  background: #fde8e8;
+  color: #c0392b;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
+.button {
+  width: 100%;
+  padding: 14px;
+  background: #4a90d9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.button:hover {
+  background: #357abd;
+}
+
+.button:disabled {
+  background: #b0c4de;
+  cursor: not-allowed;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 24px;
+  color: #777;
+}
+
+.link {
+  color: #4a90d9;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

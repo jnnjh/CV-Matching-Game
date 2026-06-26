@@ -1,5 +1,5 @@
 export async function createGame(password) {
-  const response = await fetch('http://localhost:3000/api/games', {
+  const response = await fetch('http://localhost:3001/api/games', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
