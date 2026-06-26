@@ -1,5 +1,6 @@
 import { app } from './app.js'
 import { pool } from './db/pool.js'
+import { gameRoutes } from './routes/games.js'
 
 const PORT = Number(process.env.PORT) || 3000
 
