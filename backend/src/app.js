@@ -19,6 +19,8 @@ app.use('/api', (_req, res, next) => {
 
 app.use('/api/users', userRoutes)
 
+app.use('/api/games', gameRoutes)
+
 app.get('/api/health', (_req, res) => {
   res.json({
     status: 'ok',
@@ -26,4 +28,4 @@ app.get('/api/health', (_req, res) => {
   })
 })
 
-app.use('/api/games', gameRoutes)
+
