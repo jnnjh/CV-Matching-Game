@@ -1,11 +1,12 @@
-import { describe, it, expect } from 'vitest'
+import request from 'supertest'
+import { app } from '../app.js'
 
-// This test checks the shape of the health-check response.
-// For route-level integration tests, consider using supertest.
-describe('health endpoint shape', () => {
-  it('response has status and timestamp fields', () => {
-    const response = { status: 'ok', timestamp: new Date().toISOString() }
-    expect(response.status).toBe('ok')
-    expect(typeof response.timestamp).toBe('string')
+describe('GET /api/health', () => {
+  it('should return status ok', async () => {
+    const response = await request(app).get('/api/health')
+
+    expect(response.status).toBe(200)
+    expect(response.body.status).toBe('ok')
+    expect(response.body.timestamp).toBeDefined()
   })
 })
