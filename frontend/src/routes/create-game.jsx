@@ -37,7 +37,15 @@ function CreateGamePage() {
 
       <button onClick={handleCreateGame}>Create Game</button>
 
-      {gameCode && <p>Game Code: {gameCode}</p>}
+      {gameCode && (
+        <div>
+          <p>Game Code: {gameCode}</p>
+
+          <QRCodeCanvas value={joinUrl} size={180} />
+
+          <p>Scan to join</p>
+        </div>
+)}
     </div>
   )
 }
