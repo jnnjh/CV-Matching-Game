@@ -44,8 +44,12 @@ function CreateGamePage() {
           <QRCodeCanvas value={joinUrl} size={180} />
 
           <p>Scan to join</p>
+
+          <button onClick={() => navigator.clipboard.writeText(joinUrl)}>
+            Copy Join Link
+          </button>
         </div>
-)}
+      )}
     </div>
   )
 }
