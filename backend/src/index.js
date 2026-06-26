@@ -1,6 +1,7 @@
 import express from 'express'
 import { userRoutes } from './routes/users.js'
 import { pool } from './db/pool.js'
+import { gameRoutes } from './src/routes/games.js'
 
 const app = express()
 const PORT = Number(process.env.PORT) || 3000
@@ -28,6 +29,8 @@ app.use('/api/users', userRoutes)
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
+
+app.use('/api/games', gameRoutes)
 
 // ── Start ───────────────────────────────────────────────────────────────────
 app.listen(PORT, async () => {
