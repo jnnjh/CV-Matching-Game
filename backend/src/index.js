@@ -1,7 +1,7 @@
 import express from 'express'
 import { userRoutes } from './routes/users.js'
 import { pool } from './db/pool.js'
-import { gameRoutes } from './src/routes/games.js'
+import { gameRoutes } from './routes/games.js'
 
 const app = express()
 const PORT = Number(process.env.PORT) || 3000
