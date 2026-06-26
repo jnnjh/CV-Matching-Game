@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
+import { QRCodeCanvas } from 'qrcode.react'
 
 export const Route = createFileRoute('/create-game')({
   component: CreateGamePage,
