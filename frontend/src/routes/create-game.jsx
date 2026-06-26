@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
+import { QRCodeCanvas } from 'qrcode.react'
 
 export const Route = createFileRoute('/create-game')({
   component: CreateGamePage,
@@ -8,6 +9,7 @@ export const Route = createFileRoute('/create-game')({
 function CreateGamePage() {
   const [name, setName] = useState('')
   const [gameCode, setGameCode] = useState('')
+  const joinUrl = gameCode ? `http://localhost:5173/join-game?code=${gameCode}` : ''
 
   async function handleCreateGame() {
     const response = await fetch('http://localhost:3000/api/games', {
@@ -35,7 +37,19 @@ function CreateGamePage() {
 
       <button onClick={handleCreateGame}>Create Game</button>
 
-      {gameCode && <p>Game Code: {gameCode}</p>}
+      {gameCode && (
+        <div>
+          <p>Game Code: {gameCode}</p>
+
+          <QRCodeCanvas value={joinUrl} size={180} />
+
+          <p>Scan to join</p>
+
+          <button onClick={() => navigator.clipboard.writeText(joinUrl)}>
+            Copy Join Link
+          </button>
+        </div>
+      )}
     </div>
   )
 }
