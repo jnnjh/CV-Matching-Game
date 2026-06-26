@@ -33,13 +33,17 @@ function LobbyPage() {
   }, [gameId]);
 
   if (loading && players.length === 0) {
-    return <div>Loading lobby...</div>;
+    return (
+      <div className={styles.container}>
+        <p>Loading lobby...</p>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div>
-        <div>❌ {error}</div>
+      <div className={styles.container}>
+        <div className={styles.error}>❌ {error}</div>
         <button onClick={fetchPlayers}>Try Again</button>
       </div>
     );
@@ -47,27 +51,38 @@ function LobbyPage() {
 
   return (
     <div className={styles.container}>
-      <h1>🎮 Waiting Room</h1>
+      <h1 className={styles.title}>🎮 Waiting Room</h1>
       
-      <div>
+      <div className={styles.gameInfo}>
         <p>Game Code: <strong>{gameId}</strong></p>
-        <p>👥 {players.length} player{players.length !== 1 ? 's' : ''} in lobby</p>
+        <p className={styles.playerCount}>
+          👥 {players.length} player{players.length !== 1 ? 's' : ''} in lobby
+        </p>
       </div>
 
-      <div>
+      <div className={styles.playerList}>
         {players.map((player) => (
-          <div key={player.id}>
-            <div>
+          <div key={player.id} className={styles.playerCard}>
+            <div className={styles.playerAvatar}>
               {player.photo_url ? (
-                <img src={player.photo_url} alt={player.name} />
+                <img 
+                  src={player.photo_url} 
+                  alt={player.name}
+                  className={styles.avatarImage}
+                />
               ) : (
-                <div>{player.name.charAt(0).toUpperCase()}</div>
+                <div className={styles.avatarPlaceholder}>
+                  {player.name.charAt(0).toUpperCase()}
+                </div>
               )}
             </div>
-            <div>
-              <p>
+            <div className={styles.playerInfo}>
+              <p className={styles.playerName}>
                 {player.name}
-                {player.is_host && <span> 👑 Host</span>}
+                {player.is_host && <span className={styles.hostBadge}>👑 Host</span>}
+              </p>
+              <p className={styles.playerStatus}>
+                {player.is_host ? 'Waiting to start...' : 'Ready to play!'}
               </p>
             </div>
           </div>
@@ -75,13 +90,13 @@ function LobbyPage() {
       </div>
 
       {players.length === 0 && (
-        <div>
+        <div className={styles.empty}>
           <p>No players have joined yet.</p>
           <p>Share the game code to invite others!</p>
         </div>
       )}
 
-      <div>
+      <div className={styles.waitingMessage}>
         <p>⏳ Waiting for host to start the game...</p>
       </div>
     </div>
