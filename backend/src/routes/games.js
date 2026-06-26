@@ -4,6 +4,7 @@ import { createGame } from '../services/games.js'
 export const gameRoutes = Router()
 
 gameRoutes.post('/', async (req, res) => {
+  console.log(req.body)
   try {
     const { password } = req.body
 
