@@ -1,7 +1,7 @@
 import express from 'express'
 import { userRoutes } from './routes/users.js'
 
-const app = express()
+export const app = express()
 
 app.use(express.json())
 
@@ -24,5 +24,3 @@ app.get('/api/health', (_req, res) => {
     timestamp: new Date().toISOString(),
   })
 })
-
-export { app }
