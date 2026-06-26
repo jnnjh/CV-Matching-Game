@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UsersRouteImport } from './routes/users'
+import { Route as JoinRouteImport } from './routes/join'
 import { Route as CreateGameRouteImport } from './routes/create-game'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const UsersRoute = UsersRouteImport.update({
   id: '/users',
   path: '/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/join',
+  path: '/join',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CreateGameRoute = CreateGameRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/create-game': typeof CreateGameRoute
+  '/join': typeof JoinRoute
   '/users': typeof UsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/create-game': typeof CreateGameRoute
+  '/join': typeof JoinRoute
   '/users': typeof UsersRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/create-game': typeof CreateGameRoute
+  '/join': typeof JoinRoute
   '/users': typeof UsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/create-game' | '/users'
+  fullPaths: '/' | '/about' | '/create-game' | '/join' | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/create-game' | '/users'
-  id: '__root__' | '/' | '/about' | '/create-game' | '/users'
+  to: '/' | '/about' | '/create-game' | '/join' | '/users'
+  id: '__root__' | '/' | '/about' | '/create-game' | '/join' | '/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   CreateGameRoute: typeof CreateGameRoute
+  JoinRoute: typeof JoinRoute
   UsersRoute: typeof UsersRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof UsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/join': {
+      id: '/join'
+      path: '/join'
+      fullPath: '/join'
+      preLoaderRoute: typeof JoinRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/create-game': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   CreateGameRoute: CreateGameRoute,
+  JoinRoute: JoinRoute,
   UsersRoute: UsersRoute,
 }
 export const routeTree = rootRouteImport

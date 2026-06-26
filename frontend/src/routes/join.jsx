@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
+import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { joinGame } from '../api/players';
 import styles from './join.module.css';
 
-export default function Join() {
+function JoinComponent() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     gameCode: '',
@@ -36,7 +36,6 @@ export default function Join() {
       setSuccess(true);
       console.log('Joined game:', result);
       
-      // Navigate to game page after a moment
       setTimeout(() => {
         // navigate({ to: `/game/${result.game.id}` });
       }, 1500);
@@ -126,3 +125,7 @@ export default function Join() {
     </div>
   );
 }
+
+export const Route = createFileRoute('/join')({
+  component: JoinComponent,
+});
