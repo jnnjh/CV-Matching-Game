@@ -5,14 +5,15 @@ export const gameRoutes = Router()
 
 gameRoutes.post('/', async (req, res) => {
   console.log(req.body)
-  try {
-    const { password } = req.body
 
-    if (!password) {
-      return res.status(400).json({ error: 'Password required' })
+  try {
+    const { name } = req.body
+
+    if (!name) {
+      return res.status(400).json({ error: 'Host name required' })
     }
 
-    const game = await createGame(password)
+    const game = await createGame(name)
 
     res.status(201).json(game)
   } catch (err) {
