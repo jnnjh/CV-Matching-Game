@@ -3,6 +3,7 @@ import { userRoutes } from './routes/users.js'
 import { gameRoutes } from './routes/games.js'
 import { playerRoutes } from './routes/players.js'
 import { lobbyRoutes } from './routes/lobby.js'
+import { statementRoutes } from './routes/statements.js'
 
 export const app = express()
 
