@@ -3,6 +3,7 @@ import { userRoutes } from './routes/users.js'
 import { gameRoutes } from './routes/games.js'
 import { playerRoutes } from './routes/players.js'
 import { lobbyRoutes } from './routes/lobby.js'
+import { statementRoutes } from './routes/statements.js'
 
 export const app = express()
 
@@ -31,6 +32,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/games', gameRoutes)
 app.use('/api/players', playerRoutes)
 app.use('/api/games', lobbyRoutes)
+app.use('/api/statements', statementRoutes)
 
 app.get('/api/health', (_req, res) => {
   res.json({
