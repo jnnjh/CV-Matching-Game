@@ -32,6 +32,7 @@ app.use('/api/users', userRoutes)
 app.use('/api/games', gameRoutes)
 app.use('/api/players', playerRoutes)
 app.use('/api/games', lobbyRoutes)
+app.use('/api/statements', statementRoutes)
 
 app.get('/api/health', (_req, res) => {
   res.json({
