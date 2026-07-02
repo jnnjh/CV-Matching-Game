@@ -122,3 +122,27 @@
   border-radius: 50%;
   object-fit: cover;
 }
+
+.statusReady {
+  color: #2e7d32;
+}
+
+.statusWaiting {
+  color: #e67e22;
+}
+
+.youBadge {
+  font-size: 12px;
+  color: #888;
+  font-weight: 400;
+}
+
+.submittedMessage {
+  text-align: center;
+  padding: 16px;
+  background: #e8f5e9;
+  border-radius: 10px;
+  color: #2e7d32;
+  font-size: 15px;
+  margin-bottom: 16px;
+}
