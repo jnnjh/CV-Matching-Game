@@ -39,9 +39,15 @@ function JoinComponent() {
       setSuccess(true);
       console.log('Joined game:', result);
       
-      // Redirect to lobby after joining
+      // Redirect to lobby with game code and player name
       setTimeout(() => {
-        navigate({ to: `/lobby/${result.game.id}` });
+        navigate({
+          to: `/lobby/${result.game.id}`,
+          search: {
+            gameCode: formData.gameCode,
+            playerName: formData.name,
+          },
+        });
       }, 1500);
     } catch (err) {
       setError(err.message);

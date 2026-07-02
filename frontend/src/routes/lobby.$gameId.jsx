@@ -1,7 +1,7 @@
-import StatementForm from '../components/StatementForm';
 import { useState, useEffect } from 'react';
-import { createFileRoute, useParams } from '@tanstack/react-router';
+import { createFileRoute, useParams, useSearch } from '@tanstack/react-router';
 import { getLobbyPlayers } from '../api/lobby';
+import StatementForm from '../components/StatementForm';
 import styles from './lobby.module.css';
 
 export const Route = createFileRoute('/lobby/$gameId')({
@@ -10,6 +10,12 @@ export const Route = createFileRoute('/lobby/$gameId')({
 
 function LobbyPage() {
   const { gameId } = useParams({ from: '/lobby/$gameId' });
+  const search = useSearch({ from: '/lobby/$gameId' });
+  
+  // Get gameCode and playerName from URL search params
+  const gameCode = search?.gameCode || '';
+  const playerName = search?.playerName || '';
+  
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,7 +61,7 @@ function LobbyPage() {
       <h1 className={styles.title}>🎮 Waiting Room</h1>
       
       <div className={styles.gameInfo}>
-        <p>Game Code: <strong>{gameId}</strong></p>
+        <p>Game Code: <strong>{gameCode || gameId}</strong></p>
         <p className={styles.playerCount}>
           👥 {players.length} player{players.length !== 1 ? 's' : ''} in lobby
         </p>
@@ -97,12 +103,14 @@ function LobbyPage() {
         </div>
       )}
 
-      {/* Statement Form */}
-      <StatementForm 
-        gameCode={gameId} 
-        playerName="Alice" 
-        onSuccess={() => console.log('Statement submitted!')}
-      />
+      {/* Statement Form - now using real values from URL */}
+      {gameCode && playerName && (
+        <StatementForm 
+          gameCode={gameCode}
+          playerName={playerName}
+          onSuccess={() => console.log('Statement submitted!')}
+        />
+      )}
 
       <div className={styles.waitingMessage}>
         <p>⏳ Waiting for host to start the game...</p>
