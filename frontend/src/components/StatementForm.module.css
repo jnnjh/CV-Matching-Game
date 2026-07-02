@@ -1,0 +1,127 @@
+.container {
+  max-width: 550px;
+  margin: 24px auto;
+  padding: 24px 28px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f2f5;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 6px;
+}
+
+.instructions {
+  color: #666;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.hint {
+  font-size: 13px;
+  color: #999;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #444;
+  font-size: 14px;
+}
+
+.required {
+  color: #e74c3c;
+}
+
+.textarea {
+  padding: 12px 14px;
+  border: 2px solid #e8ecf1;
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+  background: #fafbfc;
+  line-height: 1.6;
+  min-height: 120px;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: #4a90d9;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(74, 144, 217, 0.08);
+}
+
+.textarea::placeholder {
+  color: #bbb;
+  font-style: italic;
+}
+
+.charCount {
+  text-align: right;
+  font-size: 12px;
+  color: #bbb;
+  margin-top: 4px;
+}
+
+.error {
+  background: #fde8e8;
+  color: #c0392b;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.success {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 15px;
+  text-align: center;
+}
+
+.button {
+  padding: 12px 24px;
+  background: #4a90d9;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.button:hover:not(:disabled) {
+  background: #357abd;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(74, 144, 217, 0.25);
+}
+
+.button:disabled {
+  background: #d0d5dd;
+  cursor: not-allowed;
+  transform: none;
+}
