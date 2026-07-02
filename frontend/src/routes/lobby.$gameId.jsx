@@ -1,3 +1,4 @@
+import StatementForm from '../components/StatementForm';
 import { useState, useEffect } from 'react';
 import { createFileRoute, useParams } from '@tanstack/react-router';
 import { getLobbyPlayers } from '../api/lobby';
@@ -95,6 +96,13 @@ function LobbyPage() {
           <p>Share the game code to invite others!</p>
         </div>
       )}
+
+      {/* Statement Form */}
+      <StatementForm 
+        gameCode={gameId} 
+        playerName="Alice" 
+        onSuccess={() => console.log('Statement submitted!')}
+      />
 
       <div className={styles.waitingMessage}>
         <p>⏳ Waiting for host to start the game...</p>
