@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { createGame, startGame } from '../services/games.js'
+import { createGame, startGame, getCurrentRound } from '../services/games.js'
 
 export const gameRoutes = Router()
 
@@ -41,5 +41,25 @@ gameRoutes.post('/:gameId/start', async (req, res) => {
     }
 
     res.status(500).json({ error: 'Failed to start game' })
+  }
+})
+
+//--current round--//
+gameRoutes.get('/:gameId/current-round', async (req, res) => {
+  try {
+    const roundData = await getCurrentRound(req.params.gameId)
+
+    res.status(200).json(roundData)
+  } catch (err) {
+    console.error(err)
+
+    if (
+      err.message === 'Game not found' ||
+      err.message === 'No statement found'
+    ) {
+      return res.status(404).json({ error: err.message })
+    }
+
+    res.status(500).json({ error: 'Failed to fetch current round' })
   }
 })
