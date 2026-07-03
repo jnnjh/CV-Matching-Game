@@ -18,3 +18,35 @@ export async function createGame(password) {
 
   return rows[0]
 }
+
+export async function startGame(gameId) {
+  const { rows: users } = await pool.query(
+    `
+    SELECT * FROM users
+    WHERE game_id = $1
+    `,
+    [gameId]
+  )
+
+  if (users.length === 0) {
+    throw new Error('No users in game')
+  }
+
+  const allReady = users.every((user) => user.is_ready)
+
+  if (!allReady) {
+    throw new Error('Not all users are ready')
+  }
+
+  const { rows } = await pool.query(
+    `
+    UPDATE games
+    SET status = 'started'
+    WHERE id = $1
+    RETURNING *
+    `,
+    [gameId]
+  )
+
+  return rows[0]
+}

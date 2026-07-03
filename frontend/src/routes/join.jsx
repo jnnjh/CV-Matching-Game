@@ -74,7 +74,6 @@ function JoinComponent() {
             placeholder="Enter game code (e.g., ABC123)"
             className={styles.input}
             required
-            autoFocus
           />
         </div>
 

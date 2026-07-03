@@ -5,7 +5,6 @@ import { pool } from '../db/pool.js';
 
 describe('GET /api/games/:gameId/players', () => {
   let testGameId;
-  let testGameCode;
 
   beforeEach(async () => {
     // Create a test game
@@ -18,7 +17,6 @@ describe('GET /api/games/:gameId/players', () => {
       ['LOBBY12', 'testpass']
     );
     testGameId = rows[0].id;
-    testGameCode = rows[0].game_code;
 
     // Add test players
     await pool.query(
