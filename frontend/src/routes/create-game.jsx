@@ -9,10 +9,12 @@ export const Route = createFileRoute('/create-game')({
 function CreateGamePage() {
   const [name, setName] = useState('')
   const [gameCode, setGameCode] = useState('')
-  const joinUrl = gameCode ? `http://localhost:5173/join-game?code=${gameCode}` : ''
+  const joinUrl = gameCode
+  ? `${import.meta.env.VITE_APP_URL}/join-game?code=${gameCode}`
+  : ''
 
   async function handleCreateGame() {
-    const response = await fetch('http://localhost:3000/api/games', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/games`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
