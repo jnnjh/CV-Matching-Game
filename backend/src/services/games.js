@@ -50,3 +50,52 @@ export async function startGame(gameId) {
 
   return rows[0]
 }
+
+export async function getCurrentRound(gameId) {
+  // get current round
+  const { rows: gameRows } = await pool.query(
+    `
+    SELECT current_round
+    FROM games
+    WHERE id = $1
+    `,
+    [gameId]
+  )
+
+  if (gameRows.length === 0) {
+    throw new Error('Game not found')
+  }
+
+  const currentRound = gameRows[0].current_round
+
+  // get statement for current round
+  const { rows: statementRows } = await pool.query(
+    `
+    SELECT id, content
+    FROM statements
+    WHERE game_id = $1
+    AND round_order = $2
+    `,
+    [gameId, currentRound]
+  )
+
+  if (statementRows.length === 0) {
+    throw new Error('No statement found')
+  }
+
+  // get player choices
+  const { rows: players } = await pool.query(
+    `
+    SELECT id, name
+    FROM users
+    WHERE game_id = $1
+    `,
+    [gameId]
+  )
+
+  return {
+    round: currentRound,
+    statement: statementRows[0],
+    choices: players,
+  }
+}
