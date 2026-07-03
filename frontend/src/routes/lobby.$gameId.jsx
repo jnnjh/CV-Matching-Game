@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createFileRoute, useParams, useSearch } from '@tanstack/react-router';
 import { getLobbyPlayers } from '../api/lobby';
 import StatementForm from '../components/StatementForm';
@@ -11,21 +11,21 @@ export const Route = createFileRoute('/lobby/$gameId')({
 function LobbyPage() {
   const { gameId } = useParams({ from: '/lobby/$gameId' });
   const search = useSearch({ from: '/lobby/$gameId' });
-  
+
   const gameCode = search?.gameCode || '';
   const playerName = search?.playerName || '';
-  
+
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [checkingStatus, setCheckingStatus] = useState(true);
+  const [, setCheckingStatus] = useState(true);
   const [submissionStatusMap, setSubmissionStatusMap] = useState({});
 
   // Check if current player has submitted
-  const checkSubmissionStatus = async () => {
+  const checkSubmissionStatus = useCallback(async () => {
     if (!gameCode || !playerName) return;
-    
+
     try {
       const response = await fetch(
         `http://localhost:3000/api/statements/status?gameCode=${gameCode}&playerName=${playerName}`
@@ -37,66 +37,63 @@ function LobbyPage() {
     } finally {
       setCheckingStatus(false);
     }
-  };
+  }, [gameCode, playerName]);
 
-  // Check submission status for all players in the lobby
-  const checkAllPlayersStatus = async (playerList) => {
-    const statusMap = {};
-    
-    for (const player of playerList) {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/statements/status?gameCode=${gameCode}&playerName=${player.name}`
-        );
-        const data = await response.json();
-        statusMap[player.id] = data.submitted || false;
-      } catch (err) {
-        console.error(`Failed to check status for ${player.name}:`, err);
-        statusMap[player.id] = false;
-      }
+  // Check submission status for all players
+const checkAllPlayersStatus = useCallback(async (playerList) => {
+  const statusMap = {};
+
+  for (const player of playerList) {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/statements/status?gameCode=${gameCode}&playerName=${player.name}`
+      );
+      const data = await response.json();
+      statusMap[player.id] = data.submitted || false;
+    } catch (err) {
+      console.error(`Failed to check status for ${player.name}:`, err);
+      statusMap[player.id] = false;
     }
-    
-    setSubmissionStatusMap(statusMap);
-  };
+  }
 
-  const fetchPlayers = async () => {
+  setSubmissionStatusMap(statusMap);
+}, [gameCode]);
+
+  const fetchPlayers = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getLobbyPlayers(gameId);
       setPlayers(data.players);
-      
-      // Check status for all players
+
       await checkAllPlayersStatus(data.players);
-      
+
       setError(null);
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [gameId, checkAllPlayersStatus]);
 
   useEffect(() => {
     fetchPlayers();
     checkSubmissionStatus();
+
     const interval = setInterval(fetchPlayers, 5000);
+
     return () => clearInterval(interval);
-  }, [gameId]);
+  }, [fetchPlayers, checkSubmissionStatus]);
 
   const handleStatementSuccess = () => {
     setHasSubmitted(true);
-    
-    // Optimistically update the status map for the current player
-    setSubmissionStatusMap(prev => {
-      const currentPlayer = players.find(p => p.name === playerName);
+
+    setSubmissionStatusMap((prev) => {
+      const currentPlayer = players.find((p) => p.name === playerName);
       if (currentPlayer) {
         return { ...prev, [currentPlayer.id]: true };
       }
       return prev;
     });
-    
-    // The 5-second interval will eventually sync with the server
-    // No need to fetch immediately
   };
 
   if (loading && players.length === 0) {
@@ -119,7 +116,7 @@ function LobbyPage() {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>🎮 Waiting Room</h1>
-      
+
       <div className={styles.gameInfo}>
         <p>Game Code: <strong>{gameCode || gameId}</strong></p>
         <p className={styles.playerCount}>
@@ -131,13 +128,13 @@ function LobbyPage() {
         {players.map((player) => {
           const hasPlayerSubmitted = submissionStatusMap[player.id] || false;
           const isCurrentPlayer = player.name === playerName;
-          
+
           return (
             <div key={player.id} className={styles.playerCard}>
               <div className={styles.playerAvatar}>
                 {player.photo_url ? (
-                  <img 
-                    src={player.photo_url} 
+                  <img
+                    src={player.photo_url}
                     alt={player.name}
                     className={styles.avatarImage}
                   />
@@ -147,17 +144,27 @@ function LobbyPage() {
                   </div>
                 )}
               </div>
+
               <div className={styles.playerInfo}>
                 <p className={styles.playerName}>
                   {player.name}
-                  {player.is_host && <span className={styles.hostBadge}>👑 Host</span>}
-                  {isCurrentPlayer && <span className={styles.youBadge}> (you)</span>}
+                  {player.is_host && (
+                    <span className={styles.hostBadge}>👑 Host</span>
+                  )}
+                  {isCurrentPlayer && (
+                    <span className={styles.youBadge}> (you)</span>
+                  )}
                 </p>
+
                 <p className={styles.playerStatus}>
                   {hasPlayerSubmitted ? (
-                    <span className={styles.statusReady}>✅ Ready to play</span>
+                    <span className={styles.statusReady}>
+                      ✅ Ready to play
+                    </span>
                   ) : (
-                    <span className={styles.statusWaiting}>⏳ Waiting for statement...</span>
+                    <span className={styles.statusWaiting}>
+                      ⏳ Waiting for statement...
+                    </span>
                   )}
                 </p>
               </div>
@@ -173,9 +180,8 @@ function LobbyPage() {
         </div>
       )}
 
-      {/* Statement Form - only for current player who hasn't submitted */}
       {gameCode && playerName && !hasSubmitted && (
-        <StatementForm 
+        <StatementForm
           gameCode={gameCode}
           playerName={playerName}
           onSuccess={handleStatementSuccess}

@@ -4,6 +4,8 @@ import { gameRoutes } from './routes/games.js'
 
 const PORT = Number(process.env.PORT) || 3000
 
+app.use('/api/games', gameRoutes)
+
 app.listen(PORT, async () => {
   console.log(`🚀 Backend running on http://localhost:${PORT}`)
 
