@@ -5,7 +5,8 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     setupFiles: ['./src/test/setup.js'],
-    pool: 'forks',  // Add this to prevent parallel execution
-    isolate: true,  // Add this to isolate tests
+    pool: 'forks', // Add this to prevent parallel execution
+    isolate: true, // Add this to isolate tests
+    fileParallelism: false, // run test files one at a time, they share one DB
   },
 })
