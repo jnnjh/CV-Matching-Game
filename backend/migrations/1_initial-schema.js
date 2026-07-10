@@ -1,14 +1,11 @@
 export const shorthands = undefined
 
 export const up = (pgm) => {
-  pgm.createExtension('pgcrypto', { ifNotExists: true })
-
   // GAMES
   pgm.createTable('games', {
     id: {
-      type: 'uuid',
+      type: 'serial',
       primaryKey: true,
-      default: pgm.func('gen_random_uuid()'),
     },
     game_code: {
       type: 'varchar(10)',
@@ -42,12 +39,11 @@ export const up = (pgm) => {
   // USERS
   pgm.createTable('users', {
     id: {
-      type: 'uuid',
+      type: 'serial',
       primaryKey: true,
-      default: pgm.func('gen_random_uuid()'),
     },
     game_id: {
-      type: 'uuid',
+      type: 'integer',
       notNull: true,
       references: 'games(id)',
       onDelete: 'CASCADE',
@@ -72,18 +68,17 @@ export const up = (pgm) => {
   // STATEMENTS
   pgm.createTable('statements', {
     id: {
-      type: 'uuid',
+      type: 'serial',
       primaryKey: true,
-      default: pgm.func('gen_random_uuid()'),
     },
     game_id: {
-      type: 'uuid',
+      type: 'integer',
       notNull: true,
       references: 'games(id)',
       onDelete: 'CASCADE',
     },
     user_id: {
-      type: 'uuid',
+      type: 'integer',
       notNull: true,
       references: 'users(id)',
       onDelete: 'CASCADE',
@@ -102,30 +97,29 @@ export const up = (pgm) => {
   // VOTES
   pgm.createTable('votes', {
     id: {
-      type: 'uuid',
+      type: 'serial',
       primaryKey: true,
-      default: pgm.func('gen_random_uuid()'),
     },
     game_id: {
-      type: 'uuid',
+      type: 'integer',
       notNull: true,
       references: 'games(id)',
       onDelete: 'CASCADE',
     },
     statement_id: {
-      type: 'uuid',
+      type: 'integer',
       notNull: true,
       references: 'statements(id)',
       onDelete: 'CASCADE',
     },
     voter_id: {
-      type: 'uuid',
+      type: 'integer',
       notNull: true,
       references: 'users(id)',
       onDelete: 'CASCADE',
     },
     guessed_user_id: {
-      type: 'uuid',
+      type: 'integer',
       notNull: true,
       references: 'users(id)',
       onDelete: 'CASCADE',
