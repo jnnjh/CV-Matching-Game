@@ -47,5 +47,15 @@ export async function saveStatement(gameId, userId, content) {
     [gameId, userId, content, currentRound]
   );
 
+  // Mark player as ready
+  await pool.query(
+    `
+    UPDATE users
+    SET is_ready = TRUE
+    WHERE id = $1
+    `,
+    [userId]
+  );
+
   return rows[0];
 }

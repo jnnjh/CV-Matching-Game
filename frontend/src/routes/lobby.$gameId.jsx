@@ -1,16 +1,25 @@
 import { useState, useEffect, useCallback } from 'react'
-import { createFileRoute, useParams, useSearch } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  useParams,
+  useSearch,
+  useNavigate,
+} from '@tanstack/react-router'
 import { getLobbyPlayers } from '../api/lobby'
 import { getSubmissionStatusMap } from '../utils/getSubmissionStatusMap'
 import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
 import StatementForm from '../components/StatementForm'
 import styles from './lobby.module.css'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
 export const Route = createFileRoute('/lobby/$gameId')({
   component: LobbyPage,
 })
 
 function LobbyPage() {
+  const navigate = useNavigate()
+
   const { gameId } = useParams({ from: '/lobby/$gameId' })
   const search = useSearch({ from: '/lobby/$gameId' })
 
@@ -29,18 +38,37 @@ function LobbyPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/statements/status?gameCode=${gameCode}&playerName=${playerName}`
+        `${API_URL}/api/statements/status?gameCode=${gameCode}&playerName=${playerName}`
       )
 
       const data = await response.json()
 
       setHasSubmitted(data.submitted || false)
     } catch (err) {
-      console.error('Failed to check submission status:', err)
+      console.error(err)
     } finally {
       setCheckingStatus(false)
     }
   }, [gameCode, playerName])
+
+  const checkGameStatus = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/games/${gameId}`)
+
+      if (!response.ok) return
+
+      const game = await response.json()
+
+      if (game.status === 'started') {
+        navigate({
+          to: '/vote/$gameId',
+          params: { gameId: String(gameId) },
+        })
+      }
+    } catch (err) {
+      console.error(err)
+    }
+  }, [gameId, navigate])
 
   const fetchPlayers = useCallback(async () => {
     try {
@@ -68,11 +96,19 @@ function LobbyPage() {
   useEffect(() => {
     fetchPlayers()
     checkSubmissionStatus()
+    checkGameStatus()
 
-    const interval = setInterval(fetchPlayers, 5000)
+    const interval = setInterval(() => {
+      fetchPlayers()
+      checkGameStatus()
+    }, 5000)
 
     return () => clearInterval(interval)
-  }, [fetchPlayers, checkSubmissionStatus])
+  }, [
+    fetchPlayers,
+    checkSubmissionStatus,
+    checkGameStatus,
+  ])
 
   const handleStatementSuccess = () => {
     setHasSubmitted(true)
@@ -80,14 +116,12 @@ function LobbyPage() {
     setSubmissionStatusMap((prev) => {
       const currentPlayer = players.find((p) => p.name === playerName)
 
-      if (currentPlayer) {
-        return {
-          ...prev,
-          [currentPlayer.id]: true,
-        }
-      }
+      if (!currentPlayer) return prev
 
-      return prev
+      return {
+        ...prev,
+        [currentPlayer.id]: true,
+      }
     })
   }
 

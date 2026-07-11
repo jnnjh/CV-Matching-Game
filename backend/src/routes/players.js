@@ -56,7 +56,12 @@ playerRoutes.post('/', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error joining game:', error);
-    res.status(500).json({ error: 'Failed to join game' });
+  console.error('Error joining game:', error)
+
+  if (error.message === 'Game is full (maximum 10 players)') {
+    return res.status(400).json({ error: error.message })
   }
+
+  res.status(500).json({ error: 'Failed to join game' })
+}
 });

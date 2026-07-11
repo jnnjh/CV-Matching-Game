@@ -22,16 +22,19 @@ export async function createGame(password) {
 export async function startGame(gameId) {
   const { rows: users } = await pool.query(
     `
-    SELECT * FROM users
+    SELECT *
+    FROM users
     WHERE game_id = $1
     `,
     [gameId]
   )
 
-  if (users.length === 0) {
-    throw new Error('No users in game')
+  // Must have at least 3 players
+  if (users.length < 3) {
+    throw new Error('At least 3 players are required to start the game')
   }
 
+  // Everyone must be ready
   const allReady = users.every((user) => user.is_ready)
 
   if (!allReady) {
@@ -52,7 +55,6 @@ export async function startGame(gameId) {
 }
 
 export async function getCurrentRound(gameId) {
-  // get current round
   const { rows: gameRows } = await pool.query(
     `
     SELECT current_round
@@ -68,7 +70,6 @@ export async function getCurrentRound(gameId) {
 
   const currentRound = gameRows[0].current_round
 
-  // get statement for current round
   const { rows: statementRows } = await pool.query(
     `
     SELECT id, content
@@ -83,7 +84,6 @@ export async function getCurrentRound(gameId) {
     throw new Error('No statement found')
   }
 
-  // get player choices
   const { rows: players } = await pool.query(
     `
     SELECT id, name
