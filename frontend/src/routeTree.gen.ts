@@ -9,20 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UsersRouteImport } from './routes/users'
 import { Route as JoinGameRouteImport } from './routes/join-game'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as CreateGameRouteImport } from './routes/create-game'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VoteGameIdRouteImport } from './routes/vote.$gameId'
 import { Route as LobbyGameIdRouteImport } from './routes/lobby.$gameId'
 
-const UsersRoute = UsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const JoinGameRoute = JoinGameRouteImport.update({
   id: '/join-game',
   path: '/join-game',
@@ -36,11 +29,6 @@ const JoinRoute = JoinRouteImport.update({
 const CreateGameRoute = CreateGameRouteImport.update({
   id: '/create-game',
   path: '/create-game',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -61,32 +49,26 @@ const LobbyGameIdRoute = LobbyGameIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/create-game': typeof CreateGameRoute
   '/join': typeof JoinRoute
   '/join-game': typeof JoinGameRoute
-  '/users': typeof UsersRoute
   '/lobby/$gameId': typeof LobbyGameIdRoute
   '/vote/$gameId': typeof VoteGameIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/create-game': typeof CreateGameRoute
   '/join': typeof JoinRoute
   '/join-game': typeof JoinGameRoute
-  '/users': typeof UsersRoute
   '/lobby/$gameId': typeof LobbyGameIdRoute
   '/vote/$gameId': typeof VoteGameIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/create-game': typeof CreateGameRoute
   '/join': typeof JoinRoute
   '/join-game': typeof JoinGameRoute
-  '/users': typeof UsersRoute
   '/lobby/$gameId': typeof LobbyGameIdRoute
   '/vote/$gameId': typeof VoteGameIdRoute
 }
@@ -94,55 +76,40 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/about'
     | '/create-game'
     | '/join'
     | '/join-game'
-    | '/users'
     | '/lobby/$gameId'
     | '/vote/$gameId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/about'
     | '/create-game'
     | '/join'
     | '/join-game'
-    | '/users'
     | '/lobby/$gameId'
     | '/vote/$gameId'
   id:
     | '__root__'
     | '/'
-    | '/about'
     | '/create-game'
     | '/join'
     | '/join-game'
-    | '/users'
     | '/lobby/$gameId'
     | '/vote/$gameId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
   CreateGameRoute: typeof CreateGameRoute
   JoinRoute: typeof JoinRoute
   JoinGameRoute: typeof JoinGameRoute
-  UsersRoute: typeof UsersRoute
   LobbyGameIdRoute: typeof LobbyGameIdRoute
   VoteGameIdRoute: typeof VoteGameIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/users': {
-      id: '/users'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof UsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/join-game': {
       id: '/join-game'
       path: '/join-game'
@@ -162,13 +129,6 @@ declare module '@tanstack/react-router' {
       path: '/create-game'
       fullPath: '/create-game'
       preLoaderRoute: typeof CreateGameRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -197,11 +157,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
   CreateGameRoute: CreateGameRoute,
   JoinRoute: JoinRoute,
   JoinGameRoute: JoinGameRoute,
-  UsersRoute: UsersRoute,
   LobbyGameIdRoute: LobbyGameIdRoute,
   VoteGameIdRoute: VoteGameIdRoute,
 }
