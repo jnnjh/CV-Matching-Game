@@ -1,116 +1,112 @@
-import { useState, useEffect, useCallback } from 'react';
-import { createFileRoute, useParams, useSearch } from '@tanstack/react-router';
-import { getLobbyPlayers } from '../api/lobby';
-import StatementForm from '../components/StatementForm';
-import styles from './lobby.module.css';
+import { useState, useEffect, useCallback } from 'react'
+import { createFileRoute, useParams, useSearch } from '@tanstack/react-router'
+import { getLobbyPlayers } from '../api/lobby'
+import { getSubmissionStatusMap } from '../utils/getSubmissionStatusMap'
+import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
+import StatementForm from '../components/StatementForm'
+import styles from './lobby.module.css'
 
 export const Route = createFileRoute('/lobby/$gameId')({
   component: LobbyPage,
-});
+})
 
 function LobbyPage() {
-  const { gameId } = useParams({ from: '/lobby/$gameId' });
-  const search = useSearch({ from: '/lobby/$gameId' });
+  const { gameId } = useParams({ from: '/lobby/$gameId' })
+  const search = useSearch({ from: '/lobby/$gameId' })
 
-  const gameCode = search?.gameCode || '';
-  const playerName = search?.playerName || '';
+  const gameCode = search?.gameCode || ''
+  const playerName = search?.playerName || ''
 
-  const [players, setPlayers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [, setCheckingStatus] = useState(true);
-  const [submissionStatusMap, setSubmissionStatusMap] = useState({});
+  const [players, setPlayers] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [, setCheckingStatus] = useState(true)
+  const [submissionStatusMap, setSubmissionStatusMap] = useState({})
 
-  // Check if current player has submitted
   const checkSubmissionStatus = useCallback(async () => {
-    if (!gameCode || !playerName) return;
+    if (!gameCode || !playerName) return
 
     try {
       const response = await fetch(
         `http://localhost:3000/api/statements/status?gameCode=${gameCode}&playerName=${playerName}`
-      );
-      const data = await response.json();
-      setHasSubmitted(data.submitted || false);
+      )
+
+      const data = await response.json()
+
+      setHasSubmitted(data.submitted || false)
     } catch (err) {
-      console.error('Failed to check submission status:', err);
+      console.error('Failed to check submission status:', err)
     } finally {
-      setCheckingStatus(false);
+      setCheckingStatus(false)
     }
-  }, [gameCode, playerName]);
-
-  // Check submission status for all players
-const checkAllPlayersStatus = useCallback(async (playerList) => {
-  const statusMap = {};
-
-  for (const player of playerList) {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/statements/status?gameCode=${gameCode}&playerName=${player.name}`
-      );
-      const data = await response.json();
-      statusMap[player.id] = data.submitted || false;
-    } catch (err) {
-      console.error(`Failed to check status for ${player.name}:`, err);
-      statusMap[player.id] = false;
-    }
-  }
-
-  setSubmissionStatusMap(statusMap);
-}, [gameCode]);
+  }, [gameCode, playerName])
 
   const fetchPlayers = useCallback(async () => {
     try {
-      setLoading(true);
-      const data = await getLobbyPlayers(gameId);
-      setPlayers(data.players);
+      setLoading(true)
 
-      await checkAllPlayersStatus(data.players);
+      const data = await getLobbyPlayers(gameId)
 
-      setError(null);
+      setPlayers(data.players)
+
+      const statusMap = await getSubmissionStatusMap(
+        gameCode,
+        data.players
+      )
+
+      setSubmissionStatusMap(statusMap)
+
+      setError(null)
     } catch (err) {
-      setError(err.message);
+      setError(err.message)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  }, [gameId, checkAllPlayersStatus]);
+  }, [gameId, gameCode])
 
   useEffect(() => {
-    fetchPlayers();
-    checkSubmissionStatus();
+    fetchPlayers()
+    checkSubmissionStatus()
 
-    const interval = setInterval(fetchPlayers, 5000);
+    const interval = setInterval(fetchPlayers, 5000)
 
-    return () => clearInterval(interval);
-  }, [fetchPlayers, checkSubmissionStatus]);
+    return () => clearInterval(interval)
+  }, [fetchPlayers, checkSubmissionStatus])
 
   const handleStatementSuccess = () => {
-    setHasSubmitted(true);
+    setHasSubmitted(true)
 
     setSubmissionStatusMap((prev) => {
-      const currentPlayer = players.find((p) => p.name === playerName);
+      const currentPlayer = players.find((p) => p.name === playerName)
+
       if (currentPlayer) {
-        return { ...prev, [currentPlayer.id]: true };
+        return {
+          ...prev,
+          [currentPlayer.id]: true,
+        }
       }
-      return prev;
-    });
-  };
+
+      return prev
+    })
+  }
 
   if (loading && players.length === 0) {
     return (
       <div className={styles.container}>
         <p>Loading lobby...</p>
       </div>
-    );
+    )
   }
 
   if (error) {
     return (
       <div className={styles.container}>
         <div className={styles.error}>❌ {error}</div>
+
         <button onClick={fetchPlayers}>Try Again</button>
       </div>
-    );
+    )
   }
 
   return (
@@ -118,59 +114,24 @@ const checkAllPlayersStatus = useCallback(async (playerList) => {
       <h1 className={styles.title}>🎮 Waiting Room</h1>
 
       <div className={styles.gameInfo}>
-        <p>Game Code: <strong>{gameCode || gameId}</strong></p>
+        <p>
+          Game Code: <strong>{gameCode || gameId}</strong>
+        </p>
+
         <p className={styles.playerCount}>
           👥 {players.length} player{players.length !== 1 ? 's' : ''} in lobby
         </p>
       </div>
 
       <div className={styles.playerList}>
-        {players.map((player) => {
-          const hasPlayerSubmitted = submissionStatusMap[player.id] || false;
-          const isCurrentPlayer = player.name === playerName;
-
-          return (
-            <div key={player.id} className={styles.playerCard}>
-              <div className={styles.playerAvatar}>
-                {player.photo_url ? (
-                  <img
-                    src={player.photo_url}
-                    alt={player.name}
-                    className={styles.avatarImage}
-                  />
-                ) : (
-                  <div className={styles.avatarPlaceholder}>
-                    {player.name.charAt(0).toUpperCase()}
-                  </div>
-                )}
-              </div>
-
-              <div className={styles.playerInfo}>
-                <p className={styles.playerName}>
-                  {player.name}
-                  {player.is_host && (
-                    <span className={styles.hostBadge}>👑 Host</span>
-                  )}
-                  {isCurrentPlayer && (
-                    <span className={styles.youBadge}> (you)</span>
-                  )}
-                </p>
-
-                <p className={styles.playerStatus}>
-                  {hasPlayerSubmitted ? (
-                    <span className={styles.statusReady}>
-                      ✅ Ready to play
-                    </span>
-                  ) : (
-                    <span className={styles.statusWaiting}>
-                      ⏳ Waiting for statement...
-                    </span>
-                  )}
-                </p>
-              </div>
-            </div>
-          );
-        })}
+        {players.map((player) => (
+          <LobbyPlayerCard
+            key={player.id}
+            player={player}
+            isCurrentPlayer={player.name === playerName}
+            isReady={submissionStatusMap[player.id] || false}
+          />
+        ))}
       </div>
 
       {players.length === 0 && (
@@ -198,5 +159,5 @@ const checkAllPlayersStatus = useCallback(async (playerList) => {
         <p>⏳ Waiting for host to start the game...</p>
       </div>
     </div>
-  );
+  )
 }
