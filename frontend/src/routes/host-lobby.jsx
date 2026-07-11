@@ -2,6 +2,7 @@ import { createFileRoute, useSearch } from '@tanstack/react-router'
 import { useEffect, useState, useCallback } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
 import { getLobbyPlayers } from '../api/lobby'
+import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
 
 export const Route = createFileRoute('/host-lobby')({
   component: HostLobbyPage,
@@ -56,14 +57,15 @@ function HostLobbyPage() {
       {players.length === 0 ? (
         <p>No players have joined yet.</p>
       ) : (
-        <ul>
+        <div>
           {players.map((player) => (
-            <li key={player.id}>
-              {player.name}
-              {player.is_host && ' 👑'}
-            </li>
+            <LobbyPlayerCard
+              key={player.id}
+              player={player}
+              isReady={player.is_ready}
+            />
           ))}
-        </ul>
+        </div>
       )}
 
       <br />
