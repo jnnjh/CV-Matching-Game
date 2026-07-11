@@ -1,12 +1,15 @@
 import { Router } from 'express'
-import { createGame, startGame, getCurrentRound } from '../services/games.js'
+import {
+  createGame,
+  startGame,
+  getCurrentRound,
+} from '../services/games.js'
+import { pool } from '../db/pool.js'
 
 export const gameRoutes = Router()
 
 //--create game--//
 gameRoutes.post('/', async (req, res) => {
-  console.log(req.body)
-
   try {
     const { name } = req.body
 
@@ -36,11 +39,38 @@ gameRoutes.post('/:gameId/start', async (req, res) => {
       return res.status(400).json({ error: err.message })
     }
 
+    if (err.message === 'At least 3 players are required to start the game') {
+      return res.status(400).json({ error: err.message })
+    }
+
     if (err.message === 'No users in game') {
       return res.status(404).json({ error: err.message })
     }
 
     res.status(500).json({ error: 'Failed to start game' })
+  }
+})
+
+// NEW: get game status
+gameRoutes.get('/:gameId', async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `
+      SELECT id, status, current_round
+      FROM games
+      WHERE id = $1
+      `,
+      [req.params.gameId]
+    )
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Game not found' })
+    }
+
+    res.json(rows[0])
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: 'Failed to fetch game' })
   }
 })
 
