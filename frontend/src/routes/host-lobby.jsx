@@ -1,7 +1,8 @@
-import { createFileRoute, useSearch } from '@tanstack/react-router'
+import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { QRCodeCanvas } from 'qrcode.react'
 import { useState, useEffect, useCallback } from 'react'
 import { getLobbyPlayers } from '../api/lobby'
+import { startGame } from '../api/games'
 import { getSubmissionStatusMap } from '../utils/getSubmissionStatusMap'
 import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
 
@@ -10,6 +11,8 @@ export const Route = createFileRoute('/host-lobby')({
 })
 
 function HostLobbyPage() {
+  const navigate = useNavigate()
+
   const search = useSearch({
     from: '/host-lobby',
   })
@@ -18,6 +21,7 @@ function HostLobbyPage() {
 
   const [players, setPlayers] = useState([])
   const [submissionStatusMap, setSubmissionStatusMap] = useState({})
+  const [starting, setStarting] = useState(false)
 
   const fetchPlayers = useCallback(async () => {
     try {
@@ -43,6 +47,28 @@ function HostLobbyPage() {
 
     return () => clearInterval(interval)
   }, [fetchPlayers])
+
+  async function handleStartGame() {
+    try {
+      setStarting(true)
+
+      await startGame(search.gameId)
+
+      navigate({
+        to: '/vote/$gameId',
+        params: {
+          gameId: String(search.gameId),
+        },
+        search: {
+          gameCode: search.gameCode,
+        },
+      })
+    } catch (err) {
+      alert(err.message)
+    } finally {
+      setStarting(false)
+    }
+  }
 
   return (
     <div>
@@ -74,7 +100,12 @@ function HostLobbyPage() {
         ))}
       </div>
 
-      <button>Start Game</button>
+      <button
+        onClick={handleStartGame}
+        disabled={starting}
+      >
+        {starting ? 'Starting...' : 'Start Game'}
+      </button>
     </div>
   )
 }
