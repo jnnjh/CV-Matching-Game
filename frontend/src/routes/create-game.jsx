@@ -18,11 +18,17 @@ function CreateGamePage() {
       body: JSON.stringify({ name }),
     })
 
+    if (!response.ok) {
+      alert('Failed to create game')
+      return
+    }
+
     const data = await response.json()
 
     navigate({
       to: '/host-lobby',
       search: {
+        gameId: data.id,
         gameCode: data.game_code,
       },
     })

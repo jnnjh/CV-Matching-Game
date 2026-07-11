@@ -1,5 +1,7 @@
 import { createFileRoute, useSearch } from '@tanstack/react-router'
+import { useEffect, useState, useCallback } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
+import { getLobbyPlayers } from '../api/lobby'
 
 export const Route = createFileRoute('/host-lobby')({
   component: HostLobbyPage,
@@ -10,7 +12,26 @@ function HostLobbyPage() {
     from: '/host-lobby',
   })
 
+  const [players, setPlayers] = useState([])
+
   const joinUrl = `${import.meta.env.VITE_APP_URL}/join-game?code=${search.gameCode}`
+
+  const fetchPlayers = useCallback(async () => {
+    try {
+      const data = await getLobbyPlayers(search.gameId)
+      setPlayers(data.players)
+    } catch (err) {
+      console.error('Failed to fetch players:', err)
+    }
+  }, [search.gameId])
+
+  useEffect(() => {
+    fetchPlayers()
+
+    const interval = setInterval(fetchPlayers, 5000)
+
+    return () => clearInterval(interval)
+  }, [fetchPlayers])
 
   return (
     <div>
@@ -20,22 +41,34 @@ function HostLobbyPage() {
         Game Code: <strong>{search.gameCode}</strong>
       </p>
 
-      <div>
-        <QRCodeCanvas value={joinUrl} size={180} />
+      <QRCodeCanvas value={joinUrl} size={180} />
 
-        <p>Scan to join</p>
+      <p>Scan to join</p>
 
-        <button
-          onClick={() => navigator.clipboard.writeText(joinUrl)}
-        >
-          Copy Join Link
-        </button>
+      <button onClick={() => navigator.clipboard.writeText(joinUrl)}>
+        Copy Join Link
+      </button>
 
-        <br />
-        <br />
+      <hr />
 
-        <button>Start Game</button>
-      </div>
+      <h2>Players ({players.length})</h2>
+
+      {players.length === 0 ? (
+        <p>No players have joined yet.</p>
+      ) : (
+        <ul>
+          {players.map((player) => (
+            <li key={player.id}>
+              {player.name}
+              {player.is_host && ' 👑'}
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <br />
+
+      <button>Start Game</button>
     </div>
   )
 }
