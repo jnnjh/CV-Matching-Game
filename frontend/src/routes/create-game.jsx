@@ -1,17 +1,13 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useState } from 'react'
-import { QRCodeCanvas } from 'qrcode.react'
 
 export const Route = createFileRoute('/create-game')({
   component: CreateGamePage,
 })
 
 function CreateGamePage() {
+  const navigate = useNavigate()
   const [name, setName] = useState('')
-  const [gameCode, setGameCode] = useState('')
-  const joinUrl = gameCode
-  ? `${import.meta.env.VITE_APP_URL}/join-game?code=${gameCode}`
-  : ''
 
   async function handleCreateGame() {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/games`, {
@@ -23,7 +19,13 @@ function CreateGamePage() {
     })
 
     const data = await response.json()
-    setGameCode(data.game_code)
+
+    navigate({
+      to: '/host-lobby',
+      search: {
+        gameCode: data.game_code,
+      },
+    })
   }
 
   return (
@@ -38,20 +40,6 @@ function CreateGamePage() {
       />
 
       <button onClick={handleCreateGame}>Create Game</button>
-
-      {gameCode && (
-        <div>
-          <p>Game Code: {gameCode}</p>
-
-          <QRCodeCanvas value={joinUrl} size={180} />
-
-          <p>Scan to join</p>
-
-          <button onClick={() => navigator.clipboard.writeText(joinUrl)}>
-            Copy Join Link
-          </button>
-        </div>
-      )}
     </div>
   )
 }
