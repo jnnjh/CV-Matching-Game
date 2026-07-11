@@ -1,7 +1,8 @@
 import { createFileRoute, useSearch } from '@tanstack/react-router'
-import { useEffect, useState, useCallback } from 'react'
 import { QRCodeCanvas } from 'qrcode.react'
+import { useState, useEffect, useCallback } from 'react'
 import { getLobbyPlayers } from '../api/lobby'
+import { getSubmissionStatusMap } from '../utils/getSubmissionStatusMap'
 import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
 
 export const Route = createFileRoute('/host-lobby')({
@@ -13,18 +14,27 @@ function HostLobbyPage() {
     from: '/host-lobby',
   })
 
-  const [players, setPlayers] = useState([])
-
   const joinUrl = `${import.meta.env.VITE_APP_URL}/join-game?code=${search.gameCode}`
+
+  const [players, setPlayers] = useState([])
+  const [submissionStatusMap, setSubmissionStatusMap] = useState({})
 
   const fetchPlayers = useCallback(async () => {
     try {
       const data = await getLobbyPlayers(search.gameId)
+
       setPlayers(data.players)
+
+      const statusMap = await getSubmissionStatusMap(
+        search.gameCode,
+        data.players
+      )
+
+      setSubmissionStatusMap(statusMap)
     } catch (err) {
       console.error('Failed to fetch players:', err)
     }
-  }, [search.gameId])
+  }, [search.gameId, search.gameCode])
 
   useEffect(() => {
     fetchPlayers()
@@ -54,21 +64,15 @@ function HostLobbyPage() {
 
       <h2>Players ({players.length})</h2>
 
-      {players.length === 0 ? (
-        <p>No players have joined yet.</p>
-      ) : (
-        <div>
-          {players.map((player) => (
-            <LobbyPlayerCard
-              key={player.id}
-              player={player}
-              isReady={player.is_ready}
-            />
-          ))}
-        </div>
-      )}
-
-      <br />
+      <div>
+        {players.map((player) => (
+          <LobbyPlayerCard
+            key={player.id}
+            player={player}
+            isReady={submissionStatusMap[player.id]}
+          />
+        ))}
+      </div>
 
       <button>Start Game</button>
     </div>
