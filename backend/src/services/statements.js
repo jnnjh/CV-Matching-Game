@@ -1,9 +1,9 @@
 import { pool } from '../db/pool.js'
 
 /**
- * Get the current round number for a game
+ * Check if player already submitted a statement
  */
-async function getCurrentRound(gameId) {
+async function hasPlayerSubmitted(gameId, userId) {
   const { rows } = await pool.query(
     `
     SELECT id FROM statements 

@@ -16,7 +16,7 @@ import { Route as CreateGameRouteImport } from './routes/create-game'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VoteGameIdRouteImport } from './routes/vote.$gameId'
 import { Route as LobbyGameIdRouteImport } from './routes/lobby.$gameId'
-import { Route as HostRoundGameIDRouteImport } from './routes/host-round.$gameID'
+import { Route as HostRoundGameIdRouteImport } from './routes/host-round.$gameId'
 
 const JoinGameRoute = JoinGameRouteImport.update({
   id: '/join-game',
@@ -53,9 +53,9 @@ const LobbyGameIdRoute = LobbyGameIdRouteImport.update({
   path: '/lobby/$gameId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HostRoundGameIDRoute = HostRoundGameIDRouteImport.update({
-  id: '/host-round/$gameID',
-  path: '/host-round/$gameID',
+const HostRoundGameIdRoute = HostRoundGameIdRouteImport.update({
+  id: '/host-round/$gameId',
+  path: '/host-round/$gameId',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -65,7 +65,7 @@ export interface FileRoutesByFullPath {
   '/host-lobby': typeof HostLobbyRoute
   '/join': typeof JoinRoute
   '/join-game': typeof JoinGameRoute
-  '/host-round/$gameID': typeof HostRoundGameIDRoute
+  '/host-round/$gameId': typeof HostRoundGameIdRoute
   '/lobby/$gameId': typeof LobbyGameIdRoute
   '/vote/$gameId': typeof VoteGameIdRoute
 }
@@ -75,7 +75,7 @@ export interface FileRoutesByTo {
   '/host-lobby': typeof HostLobbyRoute
   '/join': typeof JoinRoute
   '/join-game': typeof JoinGameRoute
-  '/host-round/$gameID': typeof HostRoundGameIDRoute
+  '/host-round/$gameId': typeof HostRoundGameIdRoute
   '/lobby/$gameId': typeof LobbyGameIdRoute
   '/vote/$gameId': typeof VoteGameIdRoute
 }
@@ -86,7 +86,7 @@ export interface FileRoutesById {
   '/host-lobby': typeof HostLobbyRoute
   '/join': typeof JoinRoute
   '/join-game': typeof JoinGameRoute
-  '/host-round/$gameID': typeof HostRoundGameIDRoute
+  '/host-round/$gameId': typeof HostRoundGameIdRoute
   '/lobby/$gameId': typeof LobbyGameIdRoute
   '/vote/$gameId': typeof VoteGameIdRoute
 }
@@ -98,7 +98,7 @@ export interface FileRouteTypes {
     | '/host-lobby'
     | '/join'
     | '/join-game'
-    | '/host-round/$gameID'
+    | '/host-round/$gameId'
     | '/lobby/$gameId'
     | '/vote/$gameId'
   fileRoutesByTo: FileRoutesByTo
@@ -108,7 +108,7 @@ export interface FileRouteTypes {
     | '/host-lobby'
     | '/join'
     | '/join-game'
-    | '/host-round/$gameID'
+    | '/host-round/$gameId'
     | '/lobby/$gameId'
     | '/vote/$gameId'
   id:
@@ -118,7 +118,7 @@ export interface FileRouteTypes {
     | '/host-lobby'
     | '/join'
     | '/join-game'
-    | '/host-round/$gameID'
+    | '/host-round/$gameId'
     | '/lobby/$gameId'
     | '/vote/$gameId'
   fileRoutesById: FileRoutesById
@@ -129,7 +129,7 @@ export interface RootRouteChildren {
   HostLobbyRoute: typeof HostLobbyRoute
   JoinRoute: typeof JoinRoute
   JoinGameRoute: typeof JoinGameRoute
-  HostRoundGameIDRoute: typeof HostRoundGameIDRoute
+  HostRoundGameIdRoute: typeof HostRoundGameIdRoute
   LobbyGameIdRoute: typeof LobbyGameIdRoute
   VoteGameIdRoute: typeof VoteGameIdRoute
 }
@@ -185,11 +185,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LobbyGameIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/host-round/$gameID': {
-      id: '/host-round/$gameID'
-      path: '/host-round/$gameID'
-      fullPath: '/host-round/$gameID'
-      preLoaderRoute: typeof HostRoundGameIDRouteImport
+    '/host-round/$gameId': {
+      id: '/host-round/$gameId'
+      path: '/host-round/$gameId'
+      fullPath: '/host-round/$gameId'
+      preLoaderRoute: typeof HostRoundGameIdRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -201,7 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   HostLobbyRoute: HostLobbyRoute,
   JoinRoute: JoinRoute,
   JoinGameRoute: JoinGameRoute,
-  HostRoundGameIDRoute: HostRoundGameIDRoute,
+  HostRoundGameIdRoute: HostRoundGameIdRoute,
   LobbyGameIdRoute: LobbyGameIdRoute,
   VoteGameIdRoute: VoteGameIdRoute,
 }

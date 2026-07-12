@@ -57,7 +57,7 @@ export async function startGame(gameId) {
 export async function getCurrentRound(gameId) {
   const { rows: gameRows } = await pool.query(
     `
-    SELECT current_round
+    SELECT current_round, status
     FROM games
     WHERE id = $1
     `,
@@ -101,6 +101,7 @@ export async function getCurrentRound(gameId) {
 
   return {
     round: currentRound,
+    status,
     statement: statementRows[0],
     choices: players,
   }

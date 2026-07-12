@@ -1,10 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import {
-  createFileRoute,
-  useParams,
-  useSearch,
-  useNavigate,
-} from '@tanstack/react-router'
+import { createFileRoute, useParams, useSearch, useNavigate } from '@tanstack/react-router'
 import { getLobbyPlayers } from '../api/lobby'
 import { getSubmissionStatusMap } from '../utils/getSubmissionStatusMap'
 import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
@@ -38,7 +33,7 @@ function LobbyPage() {
 
     try {
       const response = await fetch(
-        `${API_URL}/api/statements/status?gameCode=${gameCode}&playerName=${playerName}`
+        `${API_URL}/api/statements/status?gameCode=${gameCode}&playerName=${encodeURIComponent(playerName)}`,
       )
 
       const data = await response.json()
@@ -63,12 +58,13 @@ function LobbyPage() {
         navigate({
           to: '/vote/$gameId',
           params: { gameId: String(gameId) },
+          search: { gameCode, playerName },
         })
       }
     } catch (err) {
       console.error(err)
     }
-  }, [gameId, navigate])
+  }, [gameId, navigate, gameCode, playerName])
 
   const fetchPlayers = useCallback(async () => {
     try {
@@ -78,10 +74,7 @@ function LobbyPage() {
 
       setPlayers(data.players)
 
-      const statusMap = await getSubmissionStatusMap(
-        gameCode,
-        data.players
-      )
+      const statusMap = await getSubmissionStatusMap(gameCode, data.players)
 
       setSubmissionStatusMap(statusMap)
 
@@ -104,11 +97,7 @@ function LobbyPage() {
     }, 5000)
 
     return () => clearInterval(interval)
-  }, [
-    fetchPlayers,
-    checkSubmissionStatus,
-    checkGameStatus,
-  ])
+  }, [fetchPlayers, checkSubmissionStatus, checkGameStatus])
 
   const handleStatementSuccess = () => {
     setHasSubmitted(true)
