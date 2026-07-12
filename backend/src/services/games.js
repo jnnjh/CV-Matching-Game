@@ -13,7 +13,7 @@ export async function createGame(password) {
     VALUES ($1, $2, NOW() + INTERVAL '24 hours')
     RETURNING *
     `,
-    [gameCode, password]
+    [gameCode, password],
   )
 
   return rows[0]
@@ -26,7 +26,7 @@ export async function startGame(gameId) {
     FROM users
     WHERE game_id = $1
     `,
-    [gameId]
+    [gameId],
   )
 
   // Must have at least 3 players
@@ -48,7 +48,7 @@ export async function startGame(gameId) {
     WHERE id = $1
     RETURNING *
     `,
-    [gameId]
+    [gameId],
   )
 
   return rows[0]
@@ -61,7 +61,7 @@ export async function getCurrentRound(gameId) {
     FROM games
     WHERE id = $1
     `,
-    [gameId]
+    [gameId],
   )
 
   if (gameRows.length === 0) {
@@ -69,6 +69,12 @@ export async function getCurrentRound(gameId) {
   }
 
   const currentRound = gameRows[0].current_round
+  const status = gameRows[0].status
+
+  // Once the game is finished there is no statement to show
+  if (status === 'finished') {
+    return { round: currentRound, status, statement: null, choices: [] }
+  }
 
   const { rows: statementRows } = await pool.query(
     `
@@ -77,7 +83,7 @@ export async function getCurrentRound(gameId) {
     WHERE game_id = $1
     AND round_order = $2
     `,
-    [gameId, currentRound]
+    [gameId, currentRound],
   )
 
   if (statementRows.length === 0) {
@@ -90,7 +96,7 @@ export async function getCurrentRound(gameId) {
     FROM users
     WHERE game_id = $1
     `,
-    [gameId]
+    [gameId],
   )
 
   return {
@@ -98,4 +104,61 @@ export async function getCurrentRound(gameId) {
     statement: statementRows[0],
     choices: players,
   }
+}
+
+/**
+ * Move the game to the next statement. If there is no statement for
+ * the next round, the game is marked as finished instead.
+ */
+export async function advanceRound(gameId) {
+  const { rows: gameRows } = await pool.query(
+    `
+    SELECT current_round, status
+    FROM games
+    WHERE id = $1
+    `,
+    [gameId],
+  )
+
+  if (gameRows.length === 0) {
+    throw new Error('Game not found')
+  }
+
+  const nextRound = gameRows[0].current_round + 1
+
+  const { rows: nextStatement } = await pool.query(
+    `
+    SELECT id
+    FROM statements
+    WHERE game_id = $1
+    AND round_order = $2
+    `,
+    [gameId, nextRound],
+  )
+
+  if (nextStatement.length === 0) {
+    const { rows } = await pool.query(
+      `
+      UPDATE games
+      SET status = 'finished'
+      WHERE id = $1
+      RETURNING current_round, status
+      `,
+      [gameId],
+    )
+
+    return { round: rows[0].current_round, status: rows[0].status, finished: true }
+  }
+
+  const { rows } = await pool.query(
+    `
+    UPDATE games
+    SET current_round = $2
+    WHERE id = $1
+    RETURNING current_round, status
+    `,
+    [gameId, nextRound],
+  )
+
+  return { round: rows[0].current_round, status: rows[0].status, finished: false }
 }

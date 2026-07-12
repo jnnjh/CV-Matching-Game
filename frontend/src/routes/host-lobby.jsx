@@ -59,7 +59,7 @@ function HostLobbyPage() {
       await startGame(search.gameId)
 
       navigate({
-        to: '/vote/$gameId',
+        to: '/host-round/$gameId',
         params: {
           gameId: String(search.gameId),
         },
@@ -115,6 +115,10 @@ function HostLobbyPage() {
           />
         ))}
       </div>
+      {players.length < MIN_PLAYERS && (
+        <p>Waiting for players... at least {MIN_PLAYERS} are needed to start.</p>
+      )}
+
       {players.length === MAX_PLAYERS && (
         <p>
           Lobby is full! The game will start automatically once everyone has submitted their

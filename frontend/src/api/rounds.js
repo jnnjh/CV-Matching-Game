@@ -15,3 +15,39 @@ export async function getCurrentRound(gameId) {
 
   return response.json()
 }
+
+/**
+ * Move the game to the next statement (host control)
+ * @param {string} gameId - The game ID
+ * @returns {Promise} - { round, status, finished }
+ */
+export async function nextRound(gameId) {
+  const response = await fetch(`${API_URL}/api/games/${gameId}/next-round`, {
+    method: 'POST',
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to advance to the next statement')
+  }
+
+  return data
+}
+
+/**
+ * Get vote progress for the current statement (host screen)
+ * @param {string} gameId - The game ID
+ * @returns {Promise} - { round, status, votesIn, votesNeeded, allVotesIn, players: [{ id, name, hasVoted }] }
+ */
+export async function getVoteProgress(gameId) {
+  const response = await fetch(`${API_URL}/api/games/${gameId}/vote-progress`)
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch vote progress')
+  }
+
+  return data
+}

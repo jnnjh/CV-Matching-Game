@@ -42,3 +42,69 @@ export async function saveVote(gameId, statementId, voterId, guessedUserId) {
 
   return rows[0]
 }
+
+/**
+ * Vote progress for the current statement, for the host's screen.
+ * Returns every player with a hasVoted flag. The statement's author
+ * can't vote, so they are marked as hasVoted to avoid the host screen
+ * silently giving away whose statement it is (one permanently greyed
+ * out name would be a dead giveaway).
+ */
+export async function getVoteProgress(gameId) {
+  const { rows: gameRows } = await pool.query(
+    `SELECT current_round, status FROM games WHERE id = $1`,
+    [gameId],
+  )
+
+  if (gameRows.length === 0) {
+    throw new Error('Game not found')
+  }
+
+  const { current_round: currentRound, status } = gameRows[0]
+
+  const { rows: statementRows } = await pool.query(
+    `SELECT id, user_id FROM statements WHERE game_id = $1 AND round_order = $2`,
+    [gameId, currentRound],
+  )
+
+  const statement = statementRows[0] || null
+
+  const { rows: players } = await pool.query(
+    `SELECT id, name FROM users WHERE game_id = $1 ORDER BY id`,
+    [gameId],
+  )
+
+  let voterIds = new Set()
+
+  if (statement) {
+    const { rows: votes } = await pool.query(`SELECT voter_id FROM votes WHERE statement_id = $1`, [
+      statement.id,
+    ])
+    voterIds = new Set(votes.map((v) => v.voter_id))
+  }
+
+  const playerProgress = players.map((player) => ({
+    id: player.id,
+    name: player.name,
+    hasVoted: statement ? voterIds.has(player.id) || player.id === statement.user_id : false,
+  }))
+
+  const votesNeeded = Math.max(players.length - 1, 0)
+
+  return {
+    round: currentRound,
+    status,
+    votesIn: voterIds.size,
+    votesNeeded,
+    allVotesIn: voterIds.size >= votesNeeded && votesNeeded > 0,
+    players: playerProgress,
+  }
+}
+
+/**
+ * Whether a voter has already voted on a statement.
+ * Lets the frontend keep the vote screen locked after a page refresh.
+ */
+export async function getVoteStatus(statementId, voterId) {
+  return { hasVoted: await hasAlreadyVoted(statementId, voterId) }
+}
