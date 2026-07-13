@@ -5,7 +5,12 @@ import { pool } from '../db/pool.js'
  */
 async function isSelfVote(statementId, voterId) {
   const { rows } = await pool.query(`SELECT user_id FROM statements WHERE id = $1`, [statementId])
-  return rows[0]?.user_id === voterId
+  if (rows.length === 0) return false
+
+  // voterId can arrive as a number (JSON body on POST /api/votes) or as a
+  // string (query string on GET /api/votes/status). Normalize both sides
+  // so the comparison works either way.
+  return String(rows[0].user_id) === String(voterId)
 }
 
 /**
@@ -102,9 +107,21 @@ export async function getVoteProgress(gameId) {
 }
 
 /**
- * Whether a voter has already voted on a statement.
- * Lets the frontend keep the vote screen locked after a page refresh.
+ * Status of a voter for a statement:
+ * - hasVoted: lets the frontend keep the vote screen locked after a refresh
+ * - isOwnStatement: the author sits the round out and sees a message
+ *   instead of voting options
+ *
+ * Both flags are computed here, server-side, and only answered for the
+ * requesting voter. The statement's author is never exposed to other
+ * players' browsers, so nobody can cheat by inspecting network traffic.
  */
+
 export async function getVoteStatus(statementId, voterId) {
-  return { hasVoted: await hasAlreadyVoted(statementId, voterId) }
+  const [hasVoted, isOwnStatement] = await Promise.all([
+    hasAlreadyVoted(statementId, voterId),
+    isSelfVote(statementId, voterId),
+  ])
+
+  return { hasVoted, isOwnStatement }
 }

@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { getCurrentRound } from '../api/rounds'
-import { submitVote } from '../api/votes'
+import { submitVote, getVoteStatus } from '../api/votes'
 import styles from './VoteScreen.module.css'
 
-export default function VoteScreen({ gameId, playerName, onVoteSuccess }) {
+const POLL_INTERVAL_MS = 3000
+
+export default function VoteScreen({ gameId, playerName, onVoteSuccess, onGameFinished }) {
   const [round, setRound] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -12,22 +14,72 @@ export default function VoteScreen({ gameId, playerName, onVoteSuccess }) {
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState(null)
   const [hasVoted, setHasVoted] = useState(false)
+  const [isOwnStatement, setIsOwnStatement] = useState(false)
+  const [finished, setFinished] = useState(false)
+
+  // Tracks which round we're on so we can reset the screen
+  // when the host advances to the next statement
+  const lastRoundRef = useRef(null)
 
   const fetchRound = useCallback(async () => {
     try {
-      setLoading(true)
       const data = await getCurrentRound(gameId)
+
+      // Statements ran out: hand off to the parent immediately.
+      // No game over screen — the route swaps to the results page.
+      if (data.status === 'finished') {
+        setFinished(true)
+        if (onGameFinished) onGameFinished()
+        return
+      }
+
       setRound(data)
       setError(null)
+
+      const isNewRound = lastRoundRef.current !== null && lastRoundRef.current !== data.round
+
+      // New statement: unlock the screen so the player can vote again
+      if (isNewRound) {
+        setHasVoted(false)
+        setSelectedId(null)
+        setSubmitError(null)
+        setIsOwnStatement(false)
+      }
+
+      // On first load (or a page refresh) and on every new round, ask the
+      // backend two things about this player and the current statement:
+      // did they already vote (keeps the lock refresh-proof), and is the
+      // statement their own (they sit that round out). Both flags are
+      // computed server-side so the author is never exposed to other
+      // players' browsers.
+      if ((lastRoundRef.current === null || isNewRound) && data.statement) {
+        const me = data.choices?.find((p) => p.name === playerName)
+
+        if (me) {
+          try {
+            const status = await getVoteStatus(data.statement.id, me.id)
+            if (status.hasVoted) setHasVoted(true)
+            setIsOwnStatement(Boolean(status.isOwnStatement))
+          } catch {
+            // Non-fatal: worst case the backend still rejects a duplicate or self vote
+          }
+        }
+      }
+
+      lastRoundRef.current = data.round
     } catch (err) {
       setError(err.message)
     } finally {
       setLoading(false)
     }
-  }, [gameId])
+  }, [gameId, playerName, onGameFinished])
 
   useEffect(() => {
     fetchRound()
+
+    const interval = setInterval(fetchRound, POLL_INTERVAL_MS)
+
+    return () => clearInterval(interval)
   }, [fetchRound])
 
   // The current player's id comes from matching their name in the choices list
@@ -55,10 +107,21 @@ export default function VoteScreen({ gameId, playerName, onVoteSuccess }) {
         onVoteSuccess(result)
       }
     } catch (err) {
-      setSubmitError(err.message)
+      // If the backend says we already voted, lock the screen too
+      if (err.message === 'You have already voted on this statement') {
+        setHasVoted(true)
+      } else {
+        setSubmitError(err.message)
+      }
     } finally {
       setSubmitting(false)
     }
+  }
+
+  // Game finished: render nothing. The parent route unmounts this
+  // component and shows the results screen (ticket 24) in its place.
+  if (finished) {
+    return null
   }
 
   if (loading) {
@@ -88,7 +151,11 @@ export default function VoteScreen({ gameId, playerName, onVoteSuccess }) {
 
       <blockquote className={styles.statement}>"{round.statement.content}"</blockquote>
 
-      {hasVoted ? (
+      {isOwnStatement ? (
+        <div className={styles.ownStatement}>
+          ✨ This is your statement, time to test who knows you best!
+        </div>
+      ) : hasVoted ? (
         <div className={styles.success}>✅ Vote submitted! Waiting for other players...</div>
       ) : (
         <>

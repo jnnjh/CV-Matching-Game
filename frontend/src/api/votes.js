@@ -25,3 +25,29 @@ export async function submitVote(gameId, statementId, voterId, guessedUserId) {
 
   return data
 }
+
+/**
+ * Ask the backend about this voter and the current statement:
+ * - hasVoted: keeps the vote screen locked after a page refresh
+ * - isOwnStatement: the statement's author sits the round out
+ *
+ * Both are computed server-side so the statement's author is never
+ * exposed in any other player's network traffic.
+ *
+ * @param {string} statementId
+ * @param {string} voterId
+ * @returns {Promise} - { hasVoted, isOwnStatement }
+ */
+export async function getVoteStatus(statementId, voterId) {
+  const response = await fetch(
+    `${API_URL}/api/votes/status?statementId=${statementId}&voterId=${voterId}`,
+  )
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to fetch vote status')
+  }
+
+  return data
+}

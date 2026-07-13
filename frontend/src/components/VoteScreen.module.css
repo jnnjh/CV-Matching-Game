@@ -103,3 +103,11 @@
   padding: 1rem;
   font-weight: 600;
 }
+
+.ownStatement {
+  background: #eef0ff;
+  color: #4338ca;
+  border-radius: 8px;
+  padding: 1rem;
+  font-weight: 600;
+}
