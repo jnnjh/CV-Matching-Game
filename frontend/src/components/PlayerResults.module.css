@@ -1,0 +1,66 @@
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: 1.25rem;
+}
+
+.scoreCard {
+  background: #f4f4ff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.statement {
+  color: #555;
+  font-style: italic;
+  margin: 0 0 0.5rem;
+}
+
+.percentage {
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: #646cff;
+  margin: 0;
+}
+
+.detail {
+  color: #777;
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0;
+}
+
+.motivationCard {
+  background: #e1f5ee;
+  color: #085041;
+  border-radius: 12px;
+  padding: 1rem;
+  font-weight: 500;
+}
+
+.mentorCard {
+  background: #faeeda;
+  color: #633806;
+  border-radius: 12px;
+  padding: 1rem;
+  font-weight: 500;
+}
+
+.waiting {
+  color: #999;
+  font-size: 0.85rem;
+  margin-top: 1.25rem;
+}
+
+.error {
+  background: #ffecec;
+  color: #c0392b;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}

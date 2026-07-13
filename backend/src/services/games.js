@@ -163,3 +163,78 @@ export async function advanceRound(gameId) {
 
   return { round: rows[0].current_round, status: rows[0].status, finished: false }
 }
+
+/**
+ * Final results for a game: every player with their statement and the
+ * percentage of votes that correctly guessed them as the author.
+ * Computed in one query with COUNT ... FILTER.
+ */
+export async function getGameResults(gameId) {
+  const { rows: gameRows } = await pool.query(
+    `
+    SELECT id, status
+    FROM games
+    WHERE id = $1
+    `,
+    [gameId],
+  )
+
+  if (gameRows.length === 0) {
+    throw new Error('Game not found')
+  }
+
+  const { rows } = await pool.query(
+    `
+    SELECT
+      u.id,
+      u.name,
+      s.content AS statement,
+      COUNT(v.id) AS total_votes,
+      COUNT(v.id) FILTER (WHERE v.guessed_user_id = u.id) AS correct_votes
+    FROM users u
+    LEFT JOIN statements s ON s.user_id = u.id AND s.game_id = $1
+    LEFT JOIN votes v ON v.statement_id = s.id
+    WHERE u.game_id = $1
+    GROUP BY u.id, u.name, s.content
+    ORDER BY u.id
+    `,
+    [gameId],
+  )
+
+  const results = rows.map((row) => {
+    const totalVotes = Number(row.total_votes)
+    const correctVotes = Number(row.correct_votes)
+
+    return {
+      id: row.id,
+      name: row.name,
+      statement: row.statement,
+      totalVotes,
+      correctVotes,
+      percentage: totalVotes === 0 ? 0 : Math.round((correctVotes / totalVotes) * 100),
+    }
+  })
+
+  return { gameId: gameRows[0].id, status: gameRows[0].status, results }
+}
+
+/**
+ * End a game: deletes the game row. Users, statements and votes are
+ * removed automatically through the schema's ON DELETE CASCADE.
+ */
+export async function endGame(gameId) {
+  const { rows } = await pool.query(
+    `
+    DELETE FROM games
+    WHERE id = $1
+    RETURNING id
+    `,
+    [gameId],
+  )
+
+  if (rows.length === 0) {
+    throw new Error('Game not found')
+  }
+
+  return { deleted: true, gameId: rows[0].id }
+}
