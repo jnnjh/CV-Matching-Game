@@ -46,7 +46,7 @@
 }
 
 .status {
-  margin-top: .25rem;
+  margin-top: 0.25rem;
 }
 
 .ready {
@@ -63,4 +63,34 @@
 
 .you {
   color: #777;
+}
+
+.editRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.editInput {
+  padding: 0.35rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  max-width: 160px;
+}
+
+.editButton {
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f5f5f5;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.editError {
+  margin: 0.25rem 0 0;
+  color: #c0392b;
+  font-size: 0.85rem;
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { createFileRoute, useParams, useSearch, useNavigate } from '@tanstack/react-router'
+import { updatePlayerName } from '../api/players'
 import { getLobbyPlayers } from '../api/lobby'
 import { getSubmissionStatusMap } from '../utils/getSubmissionStatusMap'
 import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
@@ -114,6 +115,23 @@ function LobbyPage() {
     })
   }
 
+  const handleRename = async (newName) => {
+    const currentPlayer = players.find((p) => p.name === playerName)
+
+    if (!currentPlayer) {
+      throw new Error('Could not find your player in the lobby')
+    }
+
+    await updatePlayerName(currentPlayer.id, newName)
+
+    navigate({
+      to: '/lobby/$gameId',
+      params: { gameId: String(gameId) },
+      search: { gameCode, playerName: newName },
+      replace: true,
+    })
+  }
+
   if (loading && players.length === 0) {
     return (
       <div className={styles.container}>
@@ -153,6 +171,8 @@ function LobbyPage() {
             player={player}
             isCurrentPlayer={player.name === playerName}
             isReady={submissionStatusMap[player.id] || false}
+            canEdit={player.name === playerName}
+            onRename={handleRename}
           />
         ))}
       </div>
