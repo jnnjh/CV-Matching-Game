@@ -59,7 +59,7 @@ export function LobbyPlayerCard({
               onChange={(e) => setNewName(e.target.value)}
               maxLength={30}
               disabled={saving}
-              autoFocus
+              //autoFocus
             />
             <button onClick={handleSave} disabled={saving}>
               {saving ? 'Saving...' : 'Save'}
