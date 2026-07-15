@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getCurrentRound, nextRound, getVoteProgress } from '../api/rounds'
 import styles from './HostRoundScreen.module.css'
+import { removePlayer } from '../api/players'
 
 const POLL_INTERVAL_MS = 3000
 
@@ -17,6 +18,7 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
   const [error, setError] = useState(null)
   const [advancing, setAdvancing] = useState(false)
   const [finished, setFinished] = useState(false)
+  const [removingId, setRemovingId] = useState(null)
 
   const fetchData = useCallback(async () => {
     try {
@@ -67,6 +69,32 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
     }
   }
 
+  const handleRemovePlayer = async (player) => {
+    const confirmed = window.confirm(
+      `Remove ${player.name} from the game? Their statement and votes will be deleted.`,
+    )
+
+    if (!confirmed) return
+
+    setRemovingId(player.id)
+    setError(null)
+
+    try {
+      const result = await removePlayer(player.id)
+
+      if (result.status === 'finished') {
+        setFinished(true)
+        if (onGameFinished) onGameFinished()
+      } else {
+        await fetchData()
+      }
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setRemovingId(null)
+    }
+  }
+
   if (finished) {
     return (
       <div className={styles.container}>
@@ -113,8 +141,18 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
             className={player.hasVoted ? `${styles.player} ${styles.playerVoted}` : styles.player}
           >
             <span className={styles.playerAvatar}>{player.name.charAt(0).toUpperCase()}</span>
-            {player.name}
+            <span className={styles.playerName}>{player.name}</span>
             {player.hasVoted && <span className={styles.check}>✓</span>}
+            <button
+              type="button"
+              className={styles.removeButton}
+              onClick={() => handleRemovePlayer(player)}
+              disabled={removingId !== null}
+              aria-label={`Remove ${player.name}`}
+              title={`Remove ${player.name}`}
+            >
+              ✕
+            </button>
           </div>
         ))}
       </div>
