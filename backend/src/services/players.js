@@ -123,3 +123,126 @@ export async function updatePlayerName(playerId, newName) {
 
   return rows[0]
 }
+
+/**
+ * Removes a player and everything they contributed. Deleting the user
+ * cascades to their statement, votes they cast, votes on their statement
+ * and votes where others guessed them.
+ *
+ * If the player had a statement, later statements shift down one
+ * round_order slot so getCurrentRound and advanceRound never hit a gap.
+ * The game's current_round pointer moves with them, and if the removed
+ * statement was the last one left to play, the game is finished.
+ */
+export async function removePlayer(playerId) {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    const { rows: playerRows } = await client.query(
+      `
+      SELECT u.id, u.game_id, u.is_host, g.status, g.current_round
+      FROM users u
+      JOIN games g ON g.id = u.game_id
+      WHERE u.id = $1
+      `,
+      [playerId],
+    )
+
+    if (playerRows.length === 0) {
+      throw new Error('Player not found')
+    }
+
+    const player = playerRows[0]
+
+    if (player.is_host) {
+      throw new Error('The host cannot be removed')
+    }
+
+    if (player.status === 'finished') {
+      throw new Error('Game has already finished')
+    }
+
+    const { rows: statementRows } = await client.query(
+      `
+      SELECT round_order FROM statements
+      WHERE user_id = $1
+      `,
+      [playerId],
+    )
+
+    const removedOrder = statementRows[0]?.round_order ?? null
+
+    await client.query('DELETE FROM users WHERE id = $1', [playerId])
+
+    let currentRound = player.current_round
+    let status = player.status
+
+    if (removedOrder !== null) {
+      // Close the gap the removed statement left behind
+      await client.query(
+        `
+        UPDATE statements
+        SET round_order = round_order - 1
+        WHERE game_id = $1 AND round_order > $2
+        `,
+        [player.game_id, removedOrder],
+      )
+
+      if (status === 'started') {
+        // The current statement shifted down together with the rest
+        if (removedOrder < currentRound) {
+          currentRound = currentRound - 1
+
+          await client.query(
+            `
+            UPDATE games
+            SET current_round = $2
+            WHERE id = $1
+            `,
+            [player.game_id, currentRound],
+          )
+        }
+
+        // If the removed statement was the current one and nothing slid
+        // into its slot, there is nothing left to play
+        const { rows: remaining } = await client.query(
+          `
+          SELECT id FROM statements
+          WHERE game_id = $1 AND round_order = $2
+          `,
+          [player.game_id, currentRound],
+        )
+
+        if (remaining.length === 0) {
+          status = 'finished'
+
+          await client.query(
+            `
+            UPDATE games
+            SET status = 'finished'
+            WHERE id = $1
+            `,
+            [player.game_id],
+          )
+        }
+      }
+    }
+
+    await client.query('COMMIT')
+
+    return {
+      removed: true,
+      playerId: player.id,
+      gameId: player.game_id,
+      round: currentRound,
+      status,
+    }
+  } catch (error) {
+    await client.query('ROLLBACK')
+    throw error
+  } finally {
+    client.release()
+  }
+}
