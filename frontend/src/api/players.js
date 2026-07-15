@@ -47,3 +47,23 @@ export async function updatePlayerName(playerId, name) {
 
   return data
 }
+
+/**
+ * Remove a player from a game together with their statement and votes
+ * (host control, allowed until the game is finished)
+ * @param {number} playerId - The player's ID
+ * @returns {Promise} - { success, removed, playerId, gameId, round, status }
+ */
+export async function removePlayer(playerId) {
+  const response = await fetch(`${API_URL}/api/players/${playerId}`, {
+    method: 'DELETE',
+  })
+
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Failed to remove player')
+  }
+
+  return data
+}
