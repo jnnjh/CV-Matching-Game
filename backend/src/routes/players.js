@@ -1,6 +1,11 @@
 import { Router } from 'express'
 import { pool } from '../db/pool.js'
-import { validateGameCode, addPlayerToGame, updatePlayerName } from '../services/players.js'
+import {
+  validateGameCode,
+  addPlayerToGame,
+  updatePlayerName,
+  removePlayer,
+} from '../services/players.js'
 
 export const playerRoutes = Router()
 
@@ -92,5 +97,29 @@ playerRoutes.patch('/:playerId', async (req, res) => {
     }
 
     res.status(500).json({ error: 'Failed to update player name' })
+  }
+})
+
+playerRoutes.delete('/:playerId', async (req, res) => {
+  try {
+    const { playerId } = req.params
+
+    const result = await removePlayer(playerId)
+
+    res.json({ success: true, ...result })
+  } catch (error) {
+    console.error('Error removing player:', error)
+
+    if (error.message === 'Player not found') {
+      return res.status(404).json({ error: error.message })
+    }
+    if (error.message === 'The host cannot be removed') {
+      return res.status(403).json({ error: error.message })
+    }
+    if (error.message === 'Game has already finished') {
+      return res.status(403).json({ error: error.message })
+    }
+
+    res.status(500).json({ error: 'Failed to remove player' })
   }
 })
