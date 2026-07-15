@@ -1,33 +1,33 @@
-import { Router } from 'express';
-import { pool } from '../db/pool.js';
-import { validateGameCode, addPlayerToGame } from '../services/players.js';
+import { Router } from 'express'
+import { pool } from '../db/pool.js'
+import { validateGameCode, addPlayerToGame, updatePlayerName } from '../services/players.js'
 
-export const playerRoutes = Router();
+export const playerRoutes = Router()
 
 playerRoutes.post('/', async (req, res) => {
   try {
-    const { gameCode, name } = req.body;
+    const { gameCode, name } = req.body
 
     // Validate required fields
     if (!gameCode) {
-      return res.status(400).json({ error: 'Game code is required' });
+      return res.status(400).json({ error: 'Game code is required' })
     }
 
     if (!name || name.trim().length === 0) {
-      return res.status(400).json({ error: 'Name is required' });
+      return res.status(400).json({ error: 'Name is required' })
     }
 
     // Validate the game code
-    const validation = await validateGameCode(gameCode);
-    
+    const validation = await validateGameCode(gameCode)
+
     if (!validation.valid) {
       if (validation.error === 'Invalid game code') {
-        return res.status(404).json({ error: 'Game not found' });
+        return res.status(404).json({ error: 'Game not found' })
       }
       if (validation.error === 'Game has expired') {
-        return res.status(410).json({ error: 'Game has expired' });
+        return res.status(410).json({ error: 'Game has expired' })
       }
-      return res.status(403).json({ error: validation.error });
+      return res.status(403).json({ error: validation.error })
     }
 
     // Check if player name already exists in this game
@@ -36,15 +36,15 @@ playerRoutes.post('/', async (req, res) => {
       SELECT id FROM users 
       WHERE game_id = $1 AND name ILIKE $2
       `,
-      [validation.game.id, name.trim()]
-    );
+      [validation.game.id, name.trim()],
+    )
 
     if (existingUsers.length > 0) {
-      return res.status(409).json({ error: 'A player with this name already exists in the game' });
+      return res.status(409).json({ error: 'A player with this name already exists in the game' })
     }
 
     // Add the player to the game
-    const player = await addPlayerToGame(validation.game.id, name.trim());
+    const player = await addPlayerToGame(validation.game.id, name.trim())
 
     res.status(201).json({
       success: true,
@@ -52,16 +52,45 @@ playerRoutes.post('/', async (req, res) => {
       game: {
         id: validation.game.id,
         gameCode: validation.game.game_code,
-        status: validation.game.status
-      }
-    });
+        status: validation.game.status,
+      },
+    })
   } catch (error) {
-  console.error('Error joining game:', error)
+    console.error('Error joining game:', error)
 
-  if (error.message === 'Game is full (maximum 10 players)') {
-    return res.status(400).json({ error: error.message })
+    if (error.message === 'Game is full (maximum 10 players)') {
+      return res.status(400).json({ error: error.message })
+    }
+
+    res.status(500).json({ error: 'Failed to join game' })
   }
+})
 
-  res.status(500).json({ error: 'Failed to join game' })
-}
-});
+playerRoutes.patch('/:playerId', async (req, res) => {
+  try {
+    const { playerId } = req.params
+    const { name } = req.body
+
+    if (!name || name.trim().length === 0) {
+      return res.status(400).json({ error: 'Name is required' })
+    }
+
+    const player = await updatePlayerName(playerId, name.trim())
+
+    res.json({ success: true, player })
+  } catch (error) {
+    console.error('Error updating player name:', error)
+
+    if (error.message === 'Player not found') {
+      return res.status(404).json({ error: error.message })
+    }
+    if (error.message === 'Game has already started') {
+      return res.status(403).json({ error: error.message })
+    }
+    if (error.message === 'A player with this name already exists in the game') {
+      return res.status(409).json({ error: error.message })
+    }
+
+    res.status(500).json({ error: 'Failed to update player name' })
+  }
+})
