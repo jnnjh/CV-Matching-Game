@@ -11,7 +11,7 @@ export async function validateGameCode(gameCode) {
     WHERE game_code = $1
     LIMIT 1
     `,
-    [gameCode]
+    [gameCode],
   )
 
   if (rows.length === 0) {
@@ -41,10 +41,7 @@ export async function validateGameCode(gameCode) {
  */
 export async function addPlayerToGame(gameId, name) {
   // Check that the game exists
-  const gameCheck = await pool.query(
-    'SELECT id FROM games WHERE id = $1',
-    [gameId]
-  )
+  const gameCheck = await pool.query('SELECT id FROM games WHERE id = $1', [gameId])
 
   if (gameCheck.rows.length === 0) {
     throw new Error(`Game with id ${gameId} does not exist`)
@@ -57,7 +54,7 @@ export async function addPlayerToGame(gameId, name) {
     FROM users
     WHERE game_id = $1
     `,
-    [gameId]
+    [gameId],
   )
 
   const playerCount = Number(countRows[0].count)
@@ -72,7 +69,56 @@ export async function addPlayerToGame(gameId, name) {
     VALUES ($1, $2, false)
     RETURNING *
     `,
-    [gameId, name]
+    [gameId, name],
+  )
+
+  return rows[0]
+}
+
+/**
+ * Updates a player's name while the game is still in the lobby
+ */
+export async function updatePlayerName(playerId, newName) {
+  const { rows: playerRows } = await pool.query(
+    `
+    SELECT u.id, u.game_id, g.status
+    FROM users u
+    JOIN games g ON g.id = u.game_id
+    WHERE u.id = $1
+    `,
+    [playerId],
+  )
+
+  if (playerRows.length === 0) {
+    throw new Error('Player not found')
+  }
+
+  const player = playerRows[0]
+
+  if (player.status !== 'waiting') {
+    throw new Error('Game has already started')
+  }
+
+  const { rows: existing } = await pool.query(
+    `
+    SELECT id FROM users
+    WHERE game_id = $1 AND name ILIKE $2 AND id != $3
+    `,
+    [player.game_id, newName, playerId],
+  )
+
+  if (existing.length > 0) {
+    throw new Error('A player with this name already exists in the game')
+  }
+
+  const { rows } = await pool.query(
+    `
+    UPDATE users
+    SET name = $1
+    WHERE id = $2
+    RETURNING *
+    `,
+    [newName, playerId],
   )
 
   return rows[0]
