@@ -1,10 +1,13 @@
 import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { QRCodeCanvas } from 'qrcode.react'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { getLobbyPlayers } from '../api/lobby'
 import { startGame } from '../api/games'
 import { getSubmissionStatusMap } from '../utils/getSubmissionStatusMap'
 import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
+
+const MIN_PLAYERS = 3
+const MAX_PLAYERS = 10
 
 export const Route = createFileRoute('/host-lobby')({
   component: HostLobbyPage,
@@ -23,16 +26,17 @@ function HostLobbyPage() {
   const [submissionStatusMap, setSubmissionStatusMap] = useState({})
   const [starting, setStarting] = useState(false)
 
+  //Guards the auto-start so it only ever fires once,
+  // even though the lobby polls every 5 seconds
+  const autoStartTriggered = useRef(false)
+
   const fetchPlayers = useCallback(async () => {
     try {
       const data = await getLobbyPlayers(search.gameId)
 
       setPlayers(data.players)
 
-      const statusMap = await getSubmissionStatusMap(
-        search.gameCode,
-        data.players
-      )
+      const statusMap = await getSubmissionStatusMap(search.gameCode, data.players)
 
       setSubmissionStatusMap(statusMap)
     } catch (err) {
@@ -48,14 +52,14 @@ function HostLobbyPage() {
     return () => clearInterval(interval)
   }, [fetchPlayers])
 
-  async function handleStartGame() {
+  const handleStartGame = useCallback(async () => {
     try {
       setStarting(true)
 
       await startGame(search.gameId)
 
       navigate({
-        to: '/vote/$gameId',
+        to: '/host-round/$gameId',
         params: {
           gameId: String(search.gameId),
         },
@@ -65,10 +69,22 @@ function HostLobbyPage() {
       })
     } catch (err) {
       alert(err.message)
-    } finally {
       setStarting(false)
     }
-  }
+  }, [navigate, search.gameId, search.gameCode])
+
+  // Auto-start: when the lobby is full (10 players) and everyone has
+  // submitted their statement, the game starts without the host clicking
+  const allReady = players.length > 0 && players.every((player) => submissionStatusMap[player.id])
+
+  useEffect(() => {
+    if (players.length === MAX_PLAYERS && allReady && !autoStartTriggered.current && !starting) {
+      autoStartTriggered.current = true
+      handleStartGame()
+    }
+  }, [players.length, allReady, starting, handleStartGame])
+
+  const canStart = players.length >= MIN_PLAYERS && !starting
 
   return (
     <div>
@@ -82,13 +98,13 @@ function HostLobbyPage() {
 
       <p>Scan to join</p>
 
-      <button onClick={() => navigator.clipboard.writeText(joinUrl)}>
-        Copy Join Link
-      </button>
+      <button onClick={() => navigator.clipboard.writeText(joinUrl)}>Copy Join Link</button>
 
       <hr />
 
-      <h2>Players ({players.length})</h2>
+      <h2>
+        Players ({players.length} / {MAX_PLAYERS})
+      </h2>
 
       <div>
         {players.map((player) => (
@@ -99,11 +115,18 @@ function HostLobbyPage() {
           />
         ))}
       </div>
+      {players.length < MIN_PLAYERS && (
+        <p>Waiting for players... at least {MIN_PLAYERS} are needed to start.</p>
+      )}
 
-      <button
-        onClick={handleStartGame}
-        disabled={starting}
-      >
+      {players.length === MAX_PLAYERS && (
+        <p>
+          Lobby is full! The game will start automatically once everyone has submitted their
+          statement.
+        </p>
+      )}
+
+      <button onClick={handleStartGame} disabled={!canStart}>
         {starting ? 'Starting...' : 'Start Game'}
       </button>
     </div>

@@ -1,10 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
-import {
-  createFileRoute,
-  useParams,
-  useSearch,
-  useNavigate,
-} from '@tanstack/react-router'
+import { createFileRoute, useParams, useSearch, useNavigate } from '@tanstack/react-router'
+import { updatePlayerName } from '../api/players'
 import { getLobbyPlayers } from '../api/lobby'
 import { getSubmissionStatusMap } from '../utils/getSubmissionStatusMap'
 import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
@@ -38,7 +34,7 @@ function LobbyPage() {
 
     try {
       const response = await fetch(
-        `${API_URL}/api/statements/status?gameCode=${gameCode}&playerName=${playerName}`
+        `${API_URL}/api/statements/status?gameCode=${gameCode}&playerName=${encodeURIComponent(playerName)}`,
       )
 
       const data = await response.json()
@@ -63,12 +59,13 @@ function LobbyPage() {
         navigate({
           to: '/vote/$gameId',
           params: { gameId: String(gameId) },
+          search: { gameCode, playerName },
         })
       }
     } catch (err) {
       console.error(err)
     }
-  }, [gameId, navigate])
+  }, [gameId, navigate, gameCode, playerName])
 
   const fetchPlayers = useCallback(async () => {
     try {
@@ -78,10 +75,7 @@ function LobbyPage() {
 
       setPlayers(data.players)
 
-      const statusMap = await getSubmissionStatusMap(
-        gameCode,
-        data.players
-      )
+      const statusMap = await getSubmissionStatusMap(gameCode, data.players)
 
       setSubmissionStatusMap(statusMap)
 
@@ -104,11 +98,7 @@ function LobbyPage() {
     }, 5000)
 
     return () => clearInterval(interval)
-  }, [
-    fetchPlayers,
-    checkSubmissionStatus,
-    checkGameStatus,
-  ])
+  }, [fetchPlayers, checkSubmissionStatus, checkGameStatus])
 
   const handleStatementSuccess = () => {
     setHasSubmitted(true)
@@ -122,6 +112,23 @@ function LobbyPage() {
         ...prev,
         [currentPlayer.id]: true,
       }
+    })
+  }
+
+  const handleRename = async (newName) => {
+    const currentPlayer = players.find((p) => p.name === playerName)
+
+    if (!currentPlayer) {
+      throw new Error('Could not find your player in the lobby')
+    }
+
+    await updatePlayerName(currentPlayer.id, newName)
+
+    navigate({
+      to: '/lobby/$gameId',
+      params: { gameId: String(gameId) },
+      search: { gameCode, playerName: newName },
+      replace: true,
     })
   }
 
@@ -164,6 +171,8 @@ function LobbyPage() {
             player={player}
             isCurrentPlayer={player.name === playerName}
             isReady={submissionStatusMap[player.id] || false}
+            canEdit={player.name === playerName}
+            onRename={handleRename}
           />
         ))}
       </div>

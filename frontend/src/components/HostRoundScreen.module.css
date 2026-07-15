@@ -1,0 +1,97 @@
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.title {
+  margin-bottom: 0.25rem;
+}
+
+.roundLabel {
+  color: #888;
+  margin-bottom: 1rem;
+}
+
+.statement {
+  background: #f4f4ff;
+  border-left: 4px solid #646cff;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 0 0 1.25rem;
+  font-size: 1.15rem;
+  font-style: italic;
+}
+
+.votesCounter {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.players {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.player {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  background: #f0f0f0;
+  color: #aaa;
+  font-weight: 600;
+}
+
+.playerVoted {
+  background: #eaffea;
+  color: #1e7d32;
+}
+
+.playerAvatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  background: #ddd;
+  font-size: 0.9rem;
+}
+
+.playerVoted .playerAvatar {
+  background: #b6e7b6;
+}
+
+.check {
+  margin-left: auto;
+}
+
+.nextButton {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 10px;
+  background: #646cff;
+  color: white;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.nextButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  background: #ffecec;
+  color: #c0392b;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+}

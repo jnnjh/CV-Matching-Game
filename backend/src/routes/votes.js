@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { saveVote } from '../services/votes.js'
+import { saveVote, getVoteStatus } from '../services/votes.js'
 
 export const voteRoutes = Router()
 
@@ -49,5 +49,26 @@ voteRoutes.post('/', async (req, res) => {
     }
 
     res.status(500).json({ error: 'Failed to save vote' })
+  }
+})
+
+/**
+ * GET /api/votes/status?statementId=1&voterId=2
+ * Whether a voter has already voted on a statement
+ */
+voteRoutes.get('/status', async (req, res) => {
+  try {
+    const { statementId, voterId } = req.query
+
+    if (!statementId || !voterId) {
+      return res.status(400).json({ error: 'statementId and voterId are required' })
+    }
+
+    const status = await getVoteStatus(statementId, voterId)
+
+    res.status(200).json(status)
+  } catch (error) {
+    console.error('Error fetching vote status:', error)
+    res.status(500).json({ error: 'Failed to fetch vote status' })
   }
 })
