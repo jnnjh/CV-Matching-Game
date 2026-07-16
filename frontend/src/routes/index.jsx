@@ -25,7 +25,7 @@ function HomePage() {
       />
 
       <h1 className={styles.title}>
-        CV<span>VHO</span>
+        C<span className={styles.vvOverlap}>VV</span>HO
       </h1>
 
       <p className={styles.subtitle}>

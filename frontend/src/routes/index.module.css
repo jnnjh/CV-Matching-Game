@@ -136,6 +136,13 @@
   }
 }
 
+.vvOverlap {
+  display: inline-block;
+  transform: scaleX(0.7);
+  letter-spacing: -6px;
+  margin-right: -4px;
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .title { font-size: 3.5rem; }
