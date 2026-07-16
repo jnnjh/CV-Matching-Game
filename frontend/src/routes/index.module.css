@@ -15,6 +15,7 @@
   overflow: hidden;
 }
 
+/* Glow effect */
 .container::before {
   content: '';
   position: absolute;
@@ -28,25 +29,68 @@
   border-radius: 50%;
 }
 
+/* Dot grid texture */
+.container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
 .title {
   font-size: 5rem;
   font-weight: 900;
   color: white;
   letter-spacing: 4px;
   margin-bottom: 0.25rem;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  text-shadow: 
+    0 0 40px rgba(167, 139, 250, 0.2),
+    0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .title span {
   color: #a78bfa;
 }
 
+.vvOverlap {
+  display: inline-block;
+  transform: scaleX(0.85);
+  letter-spacing: -4px;
+  margin-right: -2px;
+}
+
 .subtitle {
   font-size: 1.3rem;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 2.5rem;
+  margin-bottom: 0.5rem;
   font-weight: 300;
   letter-spacing: 1px;
+}
+
+.divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #a78bfa, transparent);
+  margin: 0.5rem auto 2rem auto;
+  border-radius: 2px;
+}
+
+.icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
 }
 
 .buttonGroup {
@@ -95,22 +139,7 @@
   border-color: white;
 }
 
-.icon {
-  width: 80px;
-  height: 80px;
-  margin-bottom: 1rem;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  background: rgba(255, 255, 255, 0.05);
-  padding: 8px;
-  animation: float 3s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
+/* Question Marks */
 .questionMark {
   position: absolute;
   opacity: 0.4;
@@ -136,16 +165,36 @@
   }
 }
 
-.vvOverlap {
-  display: inline-block;
-  transform: scaleX(0.7);
-  letter-spacing: -6px;
-  margin-right: -4px;
+/* ========================================
+   RESPONSIVE — Mobile
+   ======================================== */
+
+/* Tablet & Small Laptop */
+@media (max-width: 768px) {
+  .title { font-size: 4rem; }
+  .icon { width: 70px; height: 70px; }
 }
 
-/* Responsive */
+/* Mobile */
 @media (max-width: 600px) {
-  .title { font-size: 3.5rem; }
+  .container { padding: 1.5rem 1rem; }
+  
+  .title { font-size: 3.2rem; }
   .subtitle { font-size: 1rem; }
+  .icon { width: 60px; height: 60px; }
   .buttonGroup { max-width: 100%; }
+  .hostButton, .playerButton { 
+    font-size: 1rem; 
+    padding: 0.85rem 1.5rem;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 400px) {
+  .title { font-size: 2.8rem; }
+  .icon { width: 50px; height: 50px; }
+  .questionMark { 
+    opacity: 0.25; 
+    font-size: 1.5rem !important; 
+  }
 }

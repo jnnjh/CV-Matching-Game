@@ -10,7 +10,7 @@ function HomePage() {
 
   return (
     <div className={styles.container}>
-      {/* Floating question marks — more centered */}
+      {/* Floating question marks */}
       <div className={styles.questionMark} style={{ top: '12%', left: '12%', fontSize: '2.5rem', animationDelay: '0s' }}>❓</div>
       <div className={styles.questionMark} style={{ top: '18%', right: '15%', fontSize: '2rem', animationDelay: '1s' }}>❓</div>
       <div className={styles.questionMark} style={{ bottom: '25%', left: '18%', fontSize: '3rem', animationDelay: '2s' }}>❓</div>
@@ -31,6 +31,8 @@ function HomePage() {
       <p className={styles.subtitle}>
         See who wrote it. 🕵️
       </p>
+
+      <div className={styles.divider} />
 
       <div className={styles.buttonGroup}>
         <button
