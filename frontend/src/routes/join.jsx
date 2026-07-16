@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router';
 import { joinGame } from '../api/players';
+import Brand from '../components/Brand';
 import styles from './join.module.css';
 
 function JoinComponent() {
@@ -57,6 +58,7 @@ function JoinComponent() {
 
   return (
     <div className={styles.container}>
+      <Brand />
       <h1 className={styles.title}>🎮 Join a Game</h1>
       <p className={styles.subtitle}>Enter the game code and your name</p>
 

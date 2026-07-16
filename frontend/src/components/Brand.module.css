@@ -1,0 +1,25 @@
+.brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.brandIcon {
+  border-radius: 12px;
+}
+
+.brandName {
+  font-weight: 900;
+  color: white;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.vvOverlap {
+  display: inline-block;
+  transform: scaleX(0.85);
+  letter-spacing: -2px;
+  margin-right: 1px;
+  color: #a78bfa;
+}
