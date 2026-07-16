@@ -1,124 +1,217 @@
+/* ========================================
+   CVVHO — Join Page
+   ======================================== */
+
 .container {
-  max-width: 480px;
-  margin: 60px auto;
-  padding: 0 20px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(145deg, #072e73 0%, #0241a0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow effect */
+.container::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+/* Dot grid */
+.container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
 }
 
 .title {
-  text-align: center;
-  font-size: 28px;
-  margin-bottom: 32px;
-  color: #333;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 0.25rem;
+  text-shadow: 0 0 40px rgba(167, 139, 250, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 2rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
 }
 
 .form {
-  background: white;
-  padding: 32px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 2rem 2.5rem;
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 440px;
+  position: relative;
+  z-index: 1;
 }
 
 .field {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 
 .label {
   display: block;
   font-weight: 600;
-  margin-bottom: 6px;
-  color: #555;
-  font-size: 14px;
+  margin-bottom: 0.4rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
 }
 
 .required {
-  color: #e74c3c;
+  color: #f472b6;
 }
 
 .input {
   width: 100%;
-  padding: 12px 14px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 0.2s;
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .input:focus {
   outline: none;
-  border-color: #4a90d9;
+  border-color: #a78bfa;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.15);
 }
 
 .fileInput {
   width: 100%;
-  padding: 10px 0;
+  padding: 0.5rem 0;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .fileInput::file-selector-button {
-  padding: 8px 16px;
+  padding: 0.5rem 1.25rem;
   border: none;
-  border-radius: 6px;
-  background: #f0f0f0;
-  color: #333;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.fileInput::file-selector-button:hover {
-  background: #e0e0e0;
-}
-
-.error {
-  background: #fde8e8;
-  color: #c0392b;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  font-size: 14px;
-}
-
-.success {
-  background: #e8f5e9;
-  color: #2e7d32;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  font-size: 14px;
-}
-
-.button {
-  width: 100%;
-  padding: 14px;
-  background: #4a90d9;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.12);
   color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 18px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
 }
 
-.button:hover {
-  background: #357abd;
+.fileInput::file-selector-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.error {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f87171;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+.success {
+  background: rgba(52, 211, 153, 0.15);
+  color: #6ee7b7;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  text-align: center;
+  font-weight: 600;
+}
+
+.button {
+  width: 100%;
+  padding: 0.85rem;
+  background: white;
+  color: #0241a0;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  background: #f0ebf5;
 }
 
 .button:disabled {
-  background: #b0c4de;
+  background: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.5);
   cursor: not-allowed;
+  transform: none;
 }
 
 .footer {
   text-align: center;
-  margin-top: 24px;
-  color: #777;
+  margin-top: 1.5rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 1;
 }
 
 .link {
-  color: #4a90d9;
+  color: #a78bfa;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  transition: color 0.2s;
 }
 
 .link:hover {
-  text-decoration: underline;
+  color: white;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 600px) {
+  .container { padding: 1.5rem 1rem; }
+  .title { font-size: 2rem; }
+  .form { padding: 1.5rem; }
+  .button { font-size: 1rem; }
+}
+
+@media (max-width: 400px) {
+  .title { font-size: 1.6rem; }
+  .form { padding: 1.25rem; }
+  .input { font-size: 0.9rem; }
 }

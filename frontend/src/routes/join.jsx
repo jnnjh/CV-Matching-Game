@@ -39,7 +39,6 @@ function JoinComponent() {
       setSuccess(true);
       console.log('Joined game:', result);
       
-      // Redirect to lobby with game code and player name
       setTimeout(() => {
         navigate({
           to: `/lobby/${result.game.id}`,
@@ -58,8 +57,9 @@ function JoinComponent() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Join a Game</h1>
-      
+      <h1 className={styles.title}>🎮 Join a Game</h1>
+      <p className={styles.subtitle}>Enter the game code and your name</p>
+
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.field}>
           <label htmlFor="gameCode" className={styles.label}>
@@ -71,7 +71,7 @@ function JoinComponent() {
             type="text"
             value={formData.gameCode}
             onChange={handleChange}
-            placeholder="Enter game code (e.g., ABC123)"
+            placeholder="e.g., ABC123"
             className={styles.input}
             required
           />
@@ -95,7 +95,7 @@ function JoinComponent() {
 
         <div className={styles.field}>
           <label htmlFor="photo" className={styles.label}>
-            Profile Photo (optional)
+            📸 Profile Photo <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem' }}>(optional)</span>
           </label>
           <input
             id="photo"
@@ -124,7 +124,7 @@ function JoinComponent() {
           className={styles.button}
           disabled={loading}
         >
-          {loading ? 'Joining...' : 'Join Game'}
+          {loading ? 'Joining...' : '🚪 Join Game'}
         </button>
       </form>
 
