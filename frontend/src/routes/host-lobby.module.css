@@ -1,0 +1,218 @@
+/* ========================================
+   CVVHO — Host Lobby Page
+   ======================================== */
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(145deg, #072e73 0%, #0241a0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow effect */
+.container::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+/* Dot grid */
+.container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 0 40px rgba(167, 139, 250, 0.2);
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Game Code & QR Section */
+.gameInfo {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+  padding: 2rem;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.gameCodeSection {
+  text-align: center;
+}
+
+.codeLabel {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.25rem;
+}
+
+.gameCode {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.qrSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.qrLabel {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.copyButton {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.copyButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Divider */
+.divider {
+  width: 100%;
+  max-width: 600px;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin: 0 0 2rem 0;
+}
+
+/* Players Section */
+.playersSection {
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+}
+
+.playersTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.playerList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.waitingMessage {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+}
+
+.fullMessage {
+  text-align: center;
+  color: #a78bfa;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  background: rgba(167, 139, 250, 0.08);
+  border-radius: 12px;
+  border: 1px solid rgba(167, 139, 250, 0.1);
+}
+
+.startButton {
+  width: 100%;
+  padding: 0.85rem;
+  background: white;
+  color: #0241a0;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.startButton:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  background: #f0ebf5;
+}
+
+.startButton:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .container { padding: 1.5rem 1rem; }
+  .title { font-size: 2rem; }
+  .gameInfo { flex-direction: column; padding: 1.5rem; gap: 1rem; }
+  .gameCode { font-size: 1.5rem; }
+  .playersTitle { font-size: 1rem; }
+  .startButton { font-size: 1rem; }
+}
+
+@media (max-width: 400px) {
+  .title { font-size: 1.6rem; }
+  .gameInfo { padding: 1rem; }
+  .gameCode { font-size: 1.2rem; }
+}

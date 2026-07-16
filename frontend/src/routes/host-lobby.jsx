@@ -5,6 +5,8 @@ import { getLobbyPlayers } from '../api/lobby'
 import { startGame } from '../api/games'
 import { getSubmissionStatusMap } from '../utils/getSubmissionStatusMap'
 import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
+import Brand from '../components/Brand'
+import styles from './host-lobby.module.css'
 
 const MIN_PLAYERS = 3
 const MAX_PLAYERS = 10
@@ -26,18 +28,14 @@ function HostLobbyPage() {
   const [submissionStatusMap, setSubmissionStatusMap] = useState({})
   const [starting, setStarting] = useState(false)
 
-  //Guards the auto-start so it only ever fires once,
-  // even though the lobby polls every 5 seconds
   const autoStartTriggered = useRef(false)
 
   const fetchPlayers = useCallback(async () => {
     try {
       const data = await getLobbyPlayers(search.gameId)
-
       setPlayers(data.players)
 
       const statusMap = await getSubmissionStatusMap(search.gameCode, data.players)
-
       setSubmissionStatusMap(statusMap)
     } catch (err) {
       console.error('Failed to fetch players:', err)
@@ -46,18 +44,14 @@ function HostLobbyPage() {
 
   useEffect(() => {
     fetchPlayers()
-
     const interval = setInterval(fetchPlayers, 5000)
-
     return () => clearInterval(interval)
   }, [fetchPlayers])
 
   const handleStartGame = useCallback(async () => {
     try {
       setStarting(true)
-
       await startGame(search.gameId)
-
       navigate({
         to: '/host-round/$gameId',
         params: {
@@ -73,8 +67,6 @@ function HostLobbyPage() {
     }
   }, [navigate, search.gameId, search.gameCode])
 
-  // Auto-start: when the lobby is full (10 players) and everyone has
-  // submitted their statement, the game starts without the host clicking
   const allReady = players.length > 0 && players.every((player) => submissionStatusMap[player.id])
 
   useEffect(() => {
@@ -87,48 +79,68 @@ function HostLobbyPage() {
   const canStart = players.length >= MIN_PLAYERS && !starting
 
   return (
-    <div>
-      <h1>🎮 Host Lobby</h1>
+    <div className={styles.container}>
+      <Brand />
 
-      <p>
-        Game Code: <strong>{search.gameCode}</strong>
-      </p>
+      <h1 className={styles.title}>👑 Host Lobby</h1>
 
-      <QRCodeCanvas value={joinUrl} size={180} />
+      {/* Game Code & QR Section */}
+      <div className={styles.gameInfo}>
+        <div className={styles.gameCodeSection}>
+          <p className={styles.codeLabel}>Game Code</p>
+          <p className={styles.gameCode}>{search.gameCode}</p>
+        </div>
 
-      <p>Scan to join</p>
-
-      <button onClick={() => navigator.clipboard.writeText(joinUrl)}>Copy Join Link</button>
-
-      <hr />
-
-      <h2>
-        Players ({players.length} / {MAX_PLAYERS})
-      </h2>
-
-      <div>
-        {players.map((player) => (
-          <LobbyPlayerCard
-            key={player.id}
-            player={player}
-            isReady={submissionStatusMap[player.id]}
-          />
-        ))}
+        <div className={styles.qrSection}>
+          <QRCodeCanvas value={joinUrl} size={140} />
+          <p className={styles.qrLabel}>Scan to join</p>
+          <button
+            onClick={() => navigator.clipboard.writeText(joinUrl)}
+            className={styles.copyButton}
+          >
+            📋 Copy Join Link
+          </button>
+        </div>
       </div>
-      {players.length < MIN_PLAYERS && (
-        <p>Waiting for players... at least {MIN_PLAYERS} are needed to start.</p>
-      )}
 
-      {players.length === MAX_PLAYERS && (
-        <p>
-          Lobby is full! The game will start automatically once everyone has submitted their
-          statement.
-        </p>
-      )}
+      <hr className={styles.divider} />
 
-      <button onClick={handleStartGame} disabled={!canStart}>
-        {starting ? 'Starting...' : 'Start Game'}
-      </button>
+      {/* Players Section */}
+      <div className={styles.playersSection}>
+        <h2 className={styles.playersTitle}>
+          Players ({players.length} / {MAX_PLAYERS})
+        </h2>
+
+        <div className={styles.playerList}>
+          {players.map((player) => (
+            <LobbyPlayerCard
+              key={player.id}
+              player={player}
+              isReady={submissionStatusMap[player.id]}
+            />
+          ))}
+        </div>
+
+        {players.length < MIN_PLAYERS && (
+          <p className={styles.waitingMessage}>
+            ⏳ Waiting for players... at least {MIN_PLAYERS} are needed to start.
+          </p>
+        )}
+
+        {players.length === MAX_PLAYERS && (
+          <p className={styles.fullMessage}>
+            🎉 Lobby is full! The game will start automatically once everyone is ready.
+          </p>
+        )}
+
+        <button
+          onClick={handleStartGame}
+          disabled={!canStart}
+          className={styles.startButton}
+        >
+          {starting ? 'Starting...' : '🚀 Start Game'}
+        </button>
+      </div>
     </div>
   )
 }
