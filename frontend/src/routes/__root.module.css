@@ -1,19 +1,56 @@
+/* ========================================
+   CVVHO — Global Layout
+   ======================================== */
+
 .nav {
   padding: 0.75rem 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 2px solid var(--color-border);
+  background: var(--color-card);
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
 }
 
 .navLink {
   text-decoration: none;
-  color: inherit;
+  color: var(--color-text-light);
+  font-weight: 600;
+  transition: color 0.2s ease;
+  font-size: 0.95rem;
+}
+
+.navLink:hover {
+  color: var(--color-primary);
 }
 
 .navLinkActive {
-  font-weight: 600;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.navBrand {
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--color-primary-dark);
+  margin-right: auto;
+}
+
+.navBrand span {
+  color: var(--color-secondary);
 }
 
 .main {
-  padding: 2rem;
+  padding: 1.5rem;
+  min-height: calc(100vh - 4rem);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .nav { 
+    flex-wrap: wrap;
+    padding: 0.5rem 1rem;
+  }
+  .navBrand { font-size: 1rem; }
+  .main { padding: 1rem; }
 }

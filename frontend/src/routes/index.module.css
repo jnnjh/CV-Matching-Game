@@ -1,0 +1,144 @@
+/* ========================================
+   CVVHO — Landing Page (Blue Background)
+   ======================================== */
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(145deg, #072e73 0%, #0241a0 100%);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.container::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.15), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.title {
+  font-size: 5rem;
+  font-weight: 900;
+  color: white;
+  letter-spacing: 4px;
+  margin-bottom: 0.25rem;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.title span {
+  color: #a78bfa;
+}
+
+.subtitle {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+.hostButton {
+  padding: 1rem 2rem;
+  background: white;
+  color: #0241a0;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.hostButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  background: #f0ebf5;
+}
+
+.playerButton {
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+
+.playerButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-3px);
+  border-color: white;
+}
+
+.icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 1rem;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.questionMark {
+  position: absolute;
+  opacity: 0.4;
+  color: #a78bfa;
+  animation: pulseFloat 4s ease-in-out infinite;
+  pointer-events: none;
+  user-select: none;
+  font-weight: 900;
+}
+
+@keyframes pulseFloat {
+  0% { 
+    opacity: 0.1; 
+    transform: translateY(0) scale(0.9); 
+  }
+  50% { 
+    opacity: 0.7; 
+    transform: translateY(-15px) scale(1.1); 
+  }
+  100% { 
+    opacity: 0.1; 
+    transform: translateY(0) scale(0.9); 
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .title { font-size: 3.5rem; }
+  .subtitle { font-size: 1rem; }
+  .buttonGroup { max-width: 100%; }
+}
