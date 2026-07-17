@@ -27,7 +27,7 @@ function HostLobbyPage() {
   const [players, setPlayers] = useState([])
   const [submissionStatusMap, setSubmissionStatusMap] = useState({})
   const [starting, setStarting] = useState(false)
-  const [copied, setCopied] = useState(false)  // ← ADD THIS
+  const [copied, setCopied] = useState(false)
 
   const autoStartTriggered = useRef(false)
 
@@ -88,6 +88,12 @@ function HostLobbyPage() {
 
   const canStart = players.length >= MIN_PLAYERS && !starting
 
+  // Split players into rows of 5
+  const rows = []
+  for (let i = 0; i < players.length; i += 5) {
+    rows.push(players.slice(i, i + 5))
+  }
+
   return (
     <div className={styles.container}>
       <Brand />
@@ -122,13 +128,24 @@ function HostLobbyPage() {
         </h2>
 
         <div className={styles.playerList}>
-          {players.map((player) => (
-            <LobbyPlayerCard
-              key={player.id}
-              player={player}
-              isReady={submissionStatusMap[player.id]}
-            />
-          ))}
+          {players.length === 0 ? (
+            <div className={styles.empty}>
+              <p>No players have joined yet.</p>
+              <p>Share the game code to invite others!</p>
+            </div>
+          ) : (
+            rows.map((row, rowIndex) => (
+              <div key={rowIndex} className={styles.playerRow}>
+                {row.map((player) => (
+                  <LobbyPlayerCard
+                    key={player.id}
+                    player={player}
+                    isReady={submissionStatusMap[player.id]}
+                  />
+                ))}
+              </div>
+            ))
+          )}
         </div>
 
         {players.length < MIN_PLAYERS && (
