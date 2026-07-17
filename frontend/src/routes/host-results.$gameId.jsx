@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { createFileRoute, useParams, useNavigate } from '@tanstack/react-router'
 import { jsPDF } from 'jspdf'
 import { getGameResults, deleteGame } from '../api/games'
+import Brand from '../components/Brand'
 import styles from './host-results.module.css'
 
 export const Route = createFileRoute('/host-results/$gameId')({
@@ -16,7 +17,6 @@ function HostResultsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // The download button turns into End Game after the PDF is saved
   const [hasDownloaded, setHasDownloaded] = useState(false)
   const [ending, setEnding] = useState(false)
 
@@ -40,7 +40,7 @@ function HostResultsPage() {
     const doc = new jsPDF()
 
     doc.setFontSize(18)
-    doc.text('CV Matching Game - Results', 14, 20)
+    doc.text('CVVHO — Game Results', 14, 20)
 
     doc.setFontSize(11)
     doc.text(`Game #${gameId} - ${new Date().toLocaleString()}`, 14, 28)
@@ -48,7 +48,6 @@ function HostResultsPage() {
     let y = 42
 
     results.forEach((player, i) => {
-      // Start a new page when we run out of room
       if (y > 270) {
         doc.addPage()
         y = 20
@@ -68,7 +67,7 @@ function HostResultsPage() {
       y += 24
     })
 
-    doc.save(`cv-matching-game-${gameId}-results.pdf`)
+    doc.save(`cvvho-${gameId}-results.pdf`)
     setHasDownloaded(true)
   }
 
@@ -88,43 +87,56 @@ function HostResultsPage() {
   if (loading) {
     return (
       <div className={styles.container}>
-        <p>Loading results...</p>
+        <p className={styles.loading}>Loading results...</p>
       </div>
     )
   }
 
   return (
     <div className={styles.container}>
+      <Brand />
       <h1 className={styles.title}>🏆 Results</h1>
+      <p className={styles.subtitle}>Here's how everyone did!</p>
 
       {error && <div className={styles.error}>❌ {error}</div>}
 
-      <div className={styles.results}>
-        {results.map((player) => (
-          <div key={player.id} className={styles.resultCard}>
-            <p className={styles.playerName}>{player.name}</p>
-            {player.statement && <p className={styles.detail}>"{player.statement}"</p>}
-            <p className={styles.percentage}>{player.percentage}%</p>
-            <p className={styles.detail}>
-              {player.correctVotes} of {player.totalVotes} correct guesses
-            </p>
-          </div>
-        ))}
+      <div className={styles.resultsWrapper}>
+        {results.map((player, index) => {
+          let rankClass = styles.rankDefault
+          if (index === 0) rankClass = styles.rankGold
+          else if (index === 1) rankClass = styles.rankSilver
+          else if (index === 2) rankClass = styles.rankBronze
+
+          return (
+            <div key={player.id} className={styles.resultCard}>
+              <div className={`${styles.rankBadge} ${rankClass}`}>
+                {index + 1}
+              </div>
+              <p className={styles.playerName}>{player.name}</p>
+              <p className={styles.percentage}>{player.percentage}%</p>
+              <p className={styles.detail}>
+                {player.correctVotes}/{player.totalVotes}
+              </p>
+            </div>
+          )
+        })}
       </div>
 
-      {!hasDownloaded ? (
-        <button className={styles.actionButton} onClick={handleDownload}>
-          ⬇️ Download Results
-        </button>
-      ) : (
-        <button
-          className={`${styles.actionButton} ${styles.endButton}`}
-          onClick={handleEndGame}
-          disabled={ending}
-        >
-          {ending ? 'Ending...' : '🛑 End Game'}
-        </button>
-      )}
+      <div className={styles.buttonGroup}>
+        {!hasDownloaded ? (
+          <button className={styles.actionButton} onClick={handleDownload}>
+            ⬇ Download Results
+          </button>
+        ) : (
+          <button
+            className={`${styles.actionButton} ${styles.endButton}`}
+            onClick={handleEndGame}
+            disabled={ending}
+          >
+            {ending ? 'Ending...' : '🛑 End Game'}
+          </button>
+        )}
+      </div>
     </div>
   )
 }
