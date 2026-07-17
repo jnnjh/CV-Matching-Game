@@ -21,7 +21,9 @@ function CreateGamePage() {
     setLoading(true)
 
     try {
-      const response = await fetch('http://localhost:3000/api/games', {
+      const API_URL = import.meta.env.VITE_API_URL
+
+      const response = await fetch(`${API_URL}/api/games`, {  
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +46,8 @@ function CreateGamePage() {
         },
       })
     } catch (error) {
-      alert('Failed to create game. Make sure the backend is running.')
+        console.error(error)
+        alert('Failed to create game. Make sure the backend is running.')
     } finally {
       setLoading(false)
     }
