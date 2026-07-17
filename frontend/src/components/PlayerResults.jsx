@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from '@tanstack/react-router'
 import { getGameResults, getGame } from '../api/games'
+import Brand from './Brand'
 import styles from './PlayerResults.module.css'
 
 const POLL_INTERVAL_MS = 4000
@@ -36,13 +37,6 @@ function pickRandom(messages) {
   return messages[Math.floor(Math.random() * messages.length)]
 }
 
-/**
- * What a player sees once the game is finished: their own statement,
- * the percentage of players that guessed them correctly, and either a
- * motivational card (51%+) or a "book a mentor" card (below 51%).
- * Polls the game and sends the player back to the very first screen
- * when the host ends it (the API starts returning 404).
- */
 export default function PlayerResults({ gameId, playerName }) {
   const navigate = useNavigate()
 
@@ -50,7 +44,6 @@ export default function PlayerResults({ gameId, playerName }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Picked once so the message doesn't change on every poll/render
   const messageRef = useRef(null)
 
   const fetchResults = useCallback(async () => {
@@ -73,8 +66,6 @@ export default function PlayerResults({ gameId, playerName }) {
     }
   }, [gameId, playerName])
 
-  // Watch the game itself: once the host ends it, the game returns
-  // 404 and the player goes back to the join screen.
   const checkGameStillExists = useCallback(async () => {
     try {
       const game = await getGame(gameId)
@@ -98,7 +89,7 @@ export default function PlayerResults({ gameId, playerName }) {
   if (loading) {
     return (
       <div className={styles.container}>
-        <p>Loading your result...</p>
+        <p className={styles.loading}>Loading your result...</p>
       </div>
     )
   }
@@ -106,6 +97,7 @@ export default function PlayerResults({ gameId, playerName }) {
   if (error) {
     return (
       <div className={styles.container}>
+        <Brand />
         <div className={styles.error}>❌ {error}</div>
         <button onClick={fetchResults}>Try Again</button>
       </div>
@@ -115,7 +107,10 @@ export default function PlayerResults({ gameId, playerName }) {
   if (!myResult) {
     return (
       <div className={styles.container}>
-        <p>Could not find your result in this game.</p>
+        <Brand />
+        <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '1.1rem' }}>
+          Could not find your result in this game.
+        </p>
       </div>
     )
   }
@@ -124,6 +119,7 @@ export default function PlayerResults({ gameId, playerName }) {
 
   return (
     <div className={styles.container}>
+      <Brand />
       <h1 className={styles.title}>🎉 Game Over!</h1>
 
       <div className={styles.scoreCard}>
@@ -134,7 +130,9 @@ export default function PlayerResults({ gameId, playerName }) {
         </p>
       </div>
 
-      <div className={passed ? styles.motivationCard : styles.mentorCard}>{messageRef.current}</div>
+      <div className={passed ? styles.motivationCard : styles.mentorCard}>
+        {messageRef.current}
+      </div>
 
       <p className={styles.waiting}>Waiting for the host to end the game...</p>
     </div>
