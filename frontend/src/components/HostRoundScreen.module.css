@@ -1,106 +1,160 @@
+/* ========================================
+   CVVHO — Host Round Screen
+   ======================================== */
+
 .container {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 1.5rem;
-  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(145deg, #072e73 0%, #0241a0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow effect */
+.container::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+/* Dot grid */
+.container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
 }
 
 .title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 0 40px rgba(167, 139, 250, 0.2);
+  position: relative;
+  z-index: 1;
+  text-align: center;
   margin-bottom: 0.25rem;
 }
 
 .roundLabel {
-  color: #888;
-  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
 }
 
 .statement {
-  background: #f4f4ff;
-  border-left: 4px solid #646cff;
-  border-radius: 8px;
-  padding: 1rem 1.25rem;
-  margin: 0 0 1.25rem;
-  font-size: 1.15rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  margin: 0 0 1.5rem;
+  font-size: 1.3rem;
   font-style: italic;
+  color: white;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .votesCounter {
   font-weight: 600;
-  margin-bottom: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  position: relative;
+  z-index: 1;
 }
 
+.votesCounter span {
+  color: white;
+  font-weight: 700;
+}
+
+/* -------- Players List -------- */
 .players {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .player {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 0.9rem;
-  border-radius: 10px;
-  background: #f0f0f0;
-  color: #aaa;
+  gap: 0.75rem;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.4);
   font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .playerVoted {
-  background: #eaffea;
-  color: #1e7d32;
+  background: rgba(52, 211, 153, 0.08);
+  border-color: rgba(52, 211, 153, 0.15);
+  color: #6ee7b7;
 }
 
 .playerAvatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.8rem;
-  height: 1.8rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
-  background: #ddd;
-  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
 }
 
 .playerVoted .playerAvatar {
-  background: #b6e7b6;
-}
-
-.check {
-  margin-left: auto;
-}
-
-.nextButton {
-  width: 100%;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 10px;
-  background: #646cff;
-  color: white;
-  font-size: 1.05rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.nextButton:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.error {
-  background: #ffecec;
-  color: #c0392b;
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
+  background: rgba(52, 211, 153, 0.15);
+  color: #6ee7b7;
 }
 
 .playerName {
   flex: 1;
   text-align: left;
+  font-size: 0.95rem;
 }
 
+.check {
+  color: #6ee7b7;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* -------- Remove Button -------- */
 .removeButton {
   display: inline-flex;
   align-items: center;
@@ -111,18 +165,144 @@
   border: none;
   border-radius: 50%;
   background: transparent;
-  color: #aaa;
-  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.removeButton:hover {
-  background: #ffecec;
-  color: #c0392b;
+.removeButton:hover:not(:disabled) {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f87171;
 }
 
 .removeButton:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* -------- Next Button -------- */
+.nextButton {
+  width: 100%;
+  max-width: 600px;
+  padding: 0.85rem;
+  background: white;
+  color: #0241a0;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+
+.nextButton:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  background: #f0ebf5;
+}
+
+.nextButton:disabled {
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.3);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* -------- Finished State -------- */
+.finishedContainer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(145deg, #072e73 0%, #0241a0 100%);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.finishedContainer::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+.finishedContainer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.finishedTitle {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 0 40px rgba(167, 139, 250, 0.2);
+  position: relative;
+  z-index: 1;
+  margin-bottom: 0.5rem;
+}
+
+.finishedSubtitle {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.5);
+  position: relative;
+  z-index: 1;
+}
+
+/* -------- Error -------- */
+.error {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f87171;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+}
+
+/* -------- Loading -------- */
+.loading {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .container { padding: 1.5rem 1rem; }
+  .title { font-size: 2rem; }
+  .statement { font-size: 1.1rem; padding: 1rem 1.25rem; }
+  .player { padding: 0.5rem 0.75rem; }
+  .playerName { font-size: 0.85rem; }
+  .nextButton { font-size: 1rem; }
+  .finishedTitle { font-size: 2rem; }
+}
+
+@media (max-width: 400px) {
+  .title { font-size: 1.6rem; }
+  .statement { font-size: 1rem; padding: 0.75rem 1rem; }
 }

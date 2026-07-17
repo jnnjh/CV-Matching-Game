@@ -2,15 +2,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { getCurrentRound, nextRound, getVoteProgress } from '../api/rounds'
 import styles from './HostRoundScreen.module.css'
 import { removePlayer } from '../api/players'
+import Brand from './Brand'
 
 const POLL_INTERVAL_MS = 3000
 
-/**
- * The host's view during the game. The host is not a player: they don't
- * submit statements or vote. They see the current statement, live vote
- * progress (players who haven't voted stay greyed out), and a Next
- * Statement button that unlocks once every vote is in.
- */
 export default function HostRoundScreen({ gameId, onGameFinished }) {
   const [round, setRound] = useState(null)
   const [progress, setProgress] = useState(null)
@@ -97,9 +92,10 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
 
   if (finished) {
     return (
-      <div className={styles.container}>
-        <h1 className={styles.title}>🏁 All statements done!</h1>
-        <p>Calculating the results...</p>
+      <div className={styles.finishedContainer}>
+        <Brand />
+        <h1 className={styles.finishedTitle}>🏁 All statements done!</h1>
+        <p className={styles.finishedSubtitle}>Calculating the results...</p>
       </div>
     )
   }
@@ -107,7 +103,7 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
   if (loading) {
     return (
       <div className={styles.container}>
-        <p>Loading round...</p>
+        <p className={styles.loading}>Loading round...</p>
       </div>
     )
   }
@@ -115,6 +111,7 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
   if (error && !progress) {
     return (
       <div className={styles.container}>
+        <Brand />
         <div className={styles.error}>❌ {error}</div>
         <button onClick={fetchData}>Try Again</button>
       </div>
@@ -123,6 +120,7 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
 
   return (
     <div className={styles.container}>
+      <Brand />
       <h1 className={styles.title}>🎤 Host View</h1>
       <p className={styles.roundLabel}>Statement {progress?.round}</p>
 
@@ -131,7 +129,7 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
       )}
 
       <p className={styles.votesCounter}>
-        Votes in: {progress?.votesIn} / {progress?.votesNeeded}
+        Votes in: <span>{progress?.votesIn}</span> / {progress?.votesNeeded}
       </p>
 
       <div className={styles.players}>
@@ -169,7 +167,7 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
           ? 'Loading...'
           : progress?.allVotesIn
             ? 'Next Statement →'
-            : 'Waiting for votes...'}
+            : '⏳ Waiting for votes...'}
       </button>
     </div>
   )
