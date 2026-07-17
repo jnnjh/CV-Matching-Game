@@ -5,6 +5,7 @@ import { getLobbyPlayers } from '../api/lobby'
 import { getSubmissionStatusMap } from '../utils/getSubmissionStatusMap'
 import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
 import StatementForm from '../components/StatementForm'
+import Brand from '../components/Brand'
 import styles from './lobby.module.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
@@ -135,7 +136,7 @@ function LobbyPage() {
   if (loading && players.length === 0) {
     return (
       <div className={styles.container}>
-        <p>Loading lobby...</p>
+        <p className={styles.loading}>Loading lobby...</p>
       </div>
     )
   }
@@ -144,7 +145,6 @@ function LobbyPage() {
     return (
       <div className={styles.container}>
         <div className={styles.error}>❌ {error}</div>
-
         <button onClick={fetchPlayers}>Try Again</button>
       </div>
     )
@@ -152,6 +152,8 @@ function LobbyPage() {
 
   return (
     <div className={styles.container}>
+      <Brand />
+      
       <h1 className={styles.title}>🎮 Waiting Room</h1>
 
       <div className={styles.gameInfo}>
@@ -164,39 +166,48 @@ function LobbyPage() {
         </p>
       </div>
 
-      <div className={styles.playerList}>
-        {players.map((player) => (
-          <LobbyPlayerCard
-            key={player.id}
-            player={player}
-            isCurrentPlayer={player.name === playerName}
-            isReady={submissionStatusMap[player.id] || false}
-            canEdit={player.name === playerName}
-            onRename={handleRename}
-          />
-        ))}
+      {/* 2-COLUMN LAYOUT */}
+      <div className={styles.twoColumn}>
+        {/* LEFT: Statement Form */}
+        <div className={styles.leftColumn}>
+          {gameCode && playerName && !hasSubmitted ? (
+            <StatementForm
+              gameCode={gameCode}
+              playerName={playerName}
+              onSuccess={handleStatementSuccess}
+            />
+          ) : gameCode && playerName && hasSubmitted ? (
+            <div className={styles.submittedMessage}>
+              ✅ You've submitted your statement! Waiting for others...
+            </div>
+          ) : null}
+        </div>
+
+        {/* RIGHT: Player List */}
+        <div className={styles.rightColumn}>
+          <h2 className={styles.playerListTitle}>
+            Players ({players.length})
+          </h2>
+          <div className={styles.playerList}>
+            {players.map((player) => (
+              <LobbyPlayerCard
+                key={player.id}
+                player={player}
+                isCurrentPlayer={player.name === playerName}
+                isReady={submissionStatusMap[player.id] || false}
+                canEdit={player.name === playerName}
+                onRename={handleRename}
+              />
+            ))}
+          </div>
+          {players.length === 0 && (
+            <div className={styles.empty}>
+              <p>No players have joined yet.</p>
+              <p>Share the game code to invite others!</p>
+            </div>
+          )}
+        </div>
       </div>
-
-      {players.length === 0 && (
-        <div className={styles.empty}>
-          <p>No players have joined yet.</p>
-          <p>Share the game code to invite others!</p>
-        </div>
-      )}
-
-      {gameCode && playerName && !hasSubmitted && (
-        <StatementForm
-          gameCode={gameCode}
-          playerName={playerName}
-          onSuccess={handleStatementSuccess}
-        />
-      )}
-
-      {gameCode && playerName && hasSubmitted && (
-        <div className={styles.submittedMessage}>
-          ✅ You've submitted your statement! Waiting for others...
-        </div>
-      )}
 
       <div className={styles.waitingMessage}>
         <p>⏳ Waiting for host to start the game...</p>
