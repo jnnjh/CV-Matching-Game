@@ -154,7 +154,6 @@
   font-weight: 700;
 }
 
-/* -------- Remove Button -------- */
 .removeButton {
   display: inline-flex;
   align-items: center;
@@ -212,6 +211,38 @@
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+}
+
+/* -------- Progress Bar -------- */
+.progressContainer {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.3rem;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #a78bfa, #6c3cb2);
+  border-radius: 4px;
+  transition: width 0.5s ease;
 }
 
 /* -------- Finished State -------- */
@@ -300,6 +331,7 @@
   .playerName { font-size: 0.85rem; }
   .nextButton { font-size: 1rem; }
   .finishedTitle { font-size: 2rem; }
+  .progressLabel { font-size: 0.75rem; }
 }
 
 @media (max-width: 400px) {

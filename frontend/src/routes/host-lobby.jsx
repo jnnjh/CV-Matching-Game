@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { getLobbyPlayers } from '../api/lobby'
 import { startGame } from '../api/games'
 import { getSubmissionStatusMap } from '../utils/getSubmissionStatusMap'
-import { LobbyPlayerCard } from '../components/LobbyPlayerCard'
 import Brand from '../components/Brand'
 import styles from './host-lobby.module.css'
 
@@ -136,13 +135,39 @@ function HostLobbyPage() {
           ) : (
             rows.map((row, rowIndex) => (
               <div key={rowIndex} className={styles.playerRow}>
-                {row.map((player) => (
-                  <LobbyPlayerCard
-                    key={player.id}
-                    player={player}
-                    isReady={submissionStatusMap[player.id]}
-                  />
-                ))}
+                {row.map((player) => {
+                  const isReady = submissionStatusMap[player.id] || false
+                  return (
+                    <div key={player.id} className={styles.hostPlayerCard}>
+                      <div className={styles.hostAvatar}>
+                        {player.photo_url ? (
+                          <img
+                            src={player.photo_url}
+                            alt={player.name}
+                            className={styles.hostAvatarImage}
+                          />
+                        ) : (
+                          <div className={styles.hostAvatarPlaceholder}>
+                            {player.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                      <div className={styles.hostPlayerName}>
+                        {player.name}
+                        {player.is_host && <span className={styles.hostBadge}>👑</span>}
+                      </div>
+                      <div className={styles.hostPlayerStatus}>
+                        {isReady ? (
+                          <span className={styles.hostStatusReady}>✅ Ready</span>
+                        ) : (
+                          <span className={styles.hostStatusWaiting}>
+                            <span className={styles.hostHourglass}>⏳</span> Waiting for statement...
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             ))
           )}

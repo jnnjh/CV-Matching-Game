@@ -128,12 +128,33 @@ export default function VoteScreen({ gameId, playerName, onVoteSuccess, onGameFi
     )
   }
 
+  const totalRounds = round?.choices?.length || 1
+  const currentRound = round?.round || 1
+  const percentage = Math.round((currentRound / totalRounds) * 100)
+
   const options = round.choices.filter((p) => p.name !== playerName)
 
   return (
     <div className={styles.container}>
       <Brand />
       <h1 className={styles.title}>🕵️ Who wrote this?</h1>
+
+      {/* Progress Bar */}
+      {totalRounds > 1 && (
+        <div className={styles.progressContainer}>
+          <div className={styles.progressLabel}>
+            <span>Round {currentRound} of {totalRounds}</span>
+            <span>{percentage}%</span>
+          </div>
+          <div className={styles.progressTrack}>
+            <div 
+              className={styles.progressFill} 
+              style={{ width: `${percentage}%` }}
+            />
+          </div>
+        </div>
+      )}
+
       <p className={styles.roundLabel}>Round {round.round}</p>
 
       <blockquote className={styles.statement}>{round.statement.content}</blockquote>

@@ -169,6 +169,95 @@
   width: 100%;
 }
 
+/* -------- Square Cards for Host Lobby -------- */
+.hostPlayerCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.2s ease;
+  text-align: center;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.hostPlayerCard:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hostAvatar {
+  flex-shrink: 0;
+}
+
+.hostAvatarImage {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.hostAvatarPlaceholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(167, 139, 250, 0.3);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.hostPlayerName {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hostBadge {
+  font-size: 0.6rem;
+  margin-left: 0.1rem;
+}
+
+.hostPlayerStatus {
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+}
+
+.hostStatusReady {
+  color: #6ee7b7;
+}
+
+.hostStatusWaiting {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.hostHourglass {
+  display: inline-block;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* Custom scrollbar */
 .playerList::-webkit-scrollbar {
   width: 4px;
@@ -262,6 +351,18 @@
   .playerList {
     max-height: 180px;
   }
+  .hostPlayerCard .avatarImage,
+  .hostPlayerCard .avatarPlaceholder {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 0.6rem !important;
+  }
+  .hostPlayerCard .name {
+    font-size: 0.6rem !important;
+  }
+  .hostPlayerCard .status {
+    font-size: 0.5rem !important;
+  }
 }
 
 @media (max-width: 400px) {
@@ -271,5 +372,17 @@
   .playerRow {
     grid-template-columns: repeat(auto-fit, minmax(55px, 1fr));
     gap: 0.4rem;
+  }
+  .hostPlayerCard .avatarImage,
+  .hostPlayerCard .avatarPlaceholder {
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 0.5rem !important;
+  }
+  .hostPlayerCard .name {
+    font-size: 0.5rem !important;
+  }
+  .hostPlayerCard .status {
+    font-size: 0.45rem !important;
   }
 }

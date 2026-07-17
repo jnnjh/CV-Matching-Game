@@ -14,7 +14,6 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
   const [advancing, setAdvancing] = useState(false)
   const [finished, setFinished] = useState(false)
   const [removingId, setRemovingId] = useState(null)
-  const [isLastRound, setIsLastRound] = useState(false)
 
   const fetchData = useCallback(async () => {
     try {
@@ -29,11 +28,6 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
 
       const roundData = await getCurrentRound(gameId)
       setRound(roundData)
-      
-      // Check if this is the last round (no more statements after this)
-      // If there are no more rounds, this is the last one
-      setIsLastRound(progressData.isLastRound || false)
-      
       setError(null)
     } catch (err) {
       setError(err.message)
@@ -96,6 +90,11 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
     }
   }
 
+  // Total rounds = number of players
+  const totalRounds = progress?.players?.length || 1
+  const currentRound = progress?.round || 1
+  const percentage = Math.round((currentRound / totalRounds) * 100)
+
   if (finished) {
     return (
       <div className={styles.finishedContainer}>
@@ -128,6 +127,23 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
     <div className={styles.container}>
       <Brand />
       <h1 className={styles.title}>🎤 Host View</h1>
+
+      {/* Progress Bar */}
+      {totalRounds > 1 && (
+        <div className={styles.progressContainer}>
+          <div className={styles.progressLabel}>
+            <span>Round {currentRound} of {totalRounds}</span>
+            <span>{percentage}%</span>
+          </div>
+          <div className={styles.progressTrack}>
+            <div 
+              className={styles.progressFill} 
+              style={{ width: `${percentage}%` }}
+            />
+          </div>
+        </div>
+      )}
+
       <p className={styles.roundLabel}>Statement {progress?.round}</p>
 
       {round?.statement && (
@@ -172,7 +188,7 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
         {advancing
           ? 'Loading...'
           : progress?.allVotesIn
-            ? isLastRound
+            ? currentRound === totalRounds
               ? '🏁 End Game'
               : 'Next Statement →'
             : '⏳ Waiting for votes...'}

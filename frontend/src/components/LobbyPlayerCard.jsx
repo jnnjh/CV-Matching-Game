@@ -49,8 +49,8 @@ export function LobbyPlayerCard({
           ) : (
             <p className={styles.name}>
               {player.name}
-              {player.is_host && <span className={styles.hostBadge}>👑</span>}
-              {isCurrentPlayer && <span className={styles.youBadge}>(you)</span>}
+              {player.is_host && <span className={styles.hostBadge}>👑 Host</span>}
+              {isCurrentPlayer && <span className={styles.youBadge}> (you)</span>}
             </p>
           )}
         </div>
@@ -60,7 +60,7 @@ export function LobbyPlayerCard({
             <span className={styles.statusReady}>✅ Ready</span>
           ) : (
             <span className={styles.statusWaiting}>
-              <span className={styles.hourglass}>⏳</span> Wait
+              <span className={styles.hourglass}>⏳</span> Waiting for statement
             </span>
           )}
         </p>
