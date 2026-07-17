@@ -34,19 +34,21 @@ export default function StatementForm({ gameCode, playerName, onSuccess }) {
     }
   };
 
+  // Determine if the button should be disabled
+  const isDisabled = loading || success || !content.trim();
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>✍️ Submit Your CV Statement</h2>
       
       <p className={styles.instructions}>
-        Write something about yourself — your skills, experience, or a fun fact!<br />
-        <span className={styles.hint}>Be personal, and others will guess who wrote it 👀</span>
+        Write a short statement about yourself. Be personal! Others will try to guess who wrote it!
       </p>
 
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.field}>
           <label htmlFor="statement" className={styles.label}>
-            Your Statement <span className={styles.required}>*</span>
+            Your CV Statement <span className={styles.required}>*</span>
           </label>
           <textarea
             id="statement"
@@ -75,9 +77,10 @@ export default function StatementForm({ gameCode, playerName, onSuccess }) {
         <button 
           type="submit" 
           className={styles.button}
-          disabled={loading || success}
+          disabled={isDisabled}
+          title={!content.trim() ? 'Please write your CV statement first' : ''}
         >
-          {loading ? 'Submitting...' : success ? 'Submitted ✅' : 'Submit Statement'}
+          {loading ? 'Submitting...' : success ? 'Submitted ✅' : '🚀 Submit Statement'}
         </button>
       </form>
     </div>
