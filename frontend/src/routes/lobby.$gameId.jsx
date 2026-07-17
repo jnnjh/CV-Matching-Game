@@ -133,6 +133,10 @@ function LobbyPage() {
     })
   }
 
+  // Check if all players are ready
+  const allPlayersReady = players.length > 0 && 
+    players.every((player) => submissionStatusMap[player.id] === true)
+
   if (loading && players.length === 0) {
     return (
       <div className={styles.container}>
@@ -176,9 +180,14 @@ function LobbyPage() {
               playerName={playerName}
               onSuccess={handleStatementSuccess}
             />
-          ) : gameCode && playerName && hasSubmitted ? (
-            <div className={styles.submittedMessage}>
-              ✅ You've submitted your statement! Waiting for others...
+          ) : gameCode && playerName && hasSubmitted && !allPlayersReady ? (
+            <div className={styles.submittedPlaceholder}>
+              ✅ You're all set! Waiting for others to submit...
+            </div>
+          ) : allPlayersReady ? (
+            <div className={styles.allReadyPlaceholder}>
+              <span>🎉</span>
+              All players ready, waiting for host ^_^
             </div>
           ) : null}
         </div>
@@ -209,7 +218,7 @@ function LobbyPage() {
         </div>
       </div>
 
-      <div className={styles.waitingMessage}>
+      <div className={styles.waitingMessageBottom}>
         <p>⏳ Waiting for host to start the game...</p>
       </div>
     </div>
