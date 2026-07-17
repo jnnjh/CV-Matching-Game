@@ -8,29 +8,29 @@ const POLL_INTERVAL_MS = 4000
 const PASS_THRESHOLD = 51
 
 const MOTIVATIONAL_MESSAGES = [
-  'Your story shines through! Keep being unmistakably you.',
-  'People really know you — that is a superpower!',
-  'Great statements leave a mark, and yours clearly did!',
-  'Authenticity wins games. Well played!',
-  'You made an impression that stuck. Amazing job!',
-  'You told your story and everyone recognized it. That is real presence!',
-  'Memorable, genuine, unmistakably you. Keep it up!',
-  'Your voice comes through loud and clear. Never lose that!',
-  'The room knows who you are. That is how a strong personal story works!',
-  'You did not just play the game, you owned your story!',
+  '🌟 Your story shines through! Keep being unmistakably you.',
+  '💪 People really know you — that is a superpower!',
+  '🔥 Great statements leave a mark. Yours clearly did!',
+  '🏅 Authenticity wins games. Well played!',
+  '🎉 You made an impression that stuck. Amazing job!',
+  '👏 You told your story and everyone recognized it. That is real presence!',
+  '🙌 Memorable, genuine, unmistakably you. Keep it up!',
+  '📣 Your voice comes through loud and clear. Never lose that!',
+  '🏆 The room knows who you are. That is how a strong personal story works!',
+  '🚀 You did not just play the game — you owned your story!',
 ]
 
 const MENTOR_MESSAGES = [
-  'Your story deserves to be heard louder. Book a session with a mentor to sharpen it!',
-  'A little coaching goes a long way. Book a session with a mentor and level up your personal statement!',
-  'Not everyone guessed you this time. A mentor can help your story stand out. Book a session!',
-  'Time to polish that personal brand. Book a session with a mentor and make it unforgettable!',
-  'Your story has potential, it just needs a spotlight. A mentor can help you find it. Book a session!',
-  'Hidden gems need a little polish. Book a mentor session and let yours shine!',
-  'Flying under the radar? A mentor can help your story land. Book a session!',
-  'Every great story gets an editor. Book time with a mentor and sharpen yours!',
-  'You have a story worth telling, a mentor can help you tell it better. Book a session!',
-  'Blending in is easy, standing out is a skill. Learn it with a mentor — book a session!',
+  '📚 Your story deserves to be heard louder. Book a session with a mentor to sharpen it!',
+  '🚀 A little coaching goes a long way. Book a session with a mentor to level up your personal statement!',
+  '🤝 Not everyone guessed you this time. A mentor can help your story stand out.',
+  '✨ Time to polish that personal brand. Book a session with a mentor to make it unforgettable!',
+  '💡 Your story has potential — it just needs a spotlight. A mentor can help you find it.',
+  '💎 Hidden gems need a little polish. Book a session with a mentor and let yours shine!',
+  '🛬 Flying under the radar? A mentor can help your story land.',
+  '✏️ Every great story gets an editor. Book a session with a mentor to sharpen yours!',
+  '🎯 You have a story worth telling. A mentor can help you tell it better.',
+  '🌱 Blending in is easy. Standing out is a skill. Learn it with a mentor!',
 ]
 
 function pickRandom(messages) {
@@ -45,6 +45,7 @@ export default function PlayerResults({ gameId, playerName }) {
   const [error, setError] = useState(null)
 
   const messageRef = useRef(null)
+  const cardColorRef = useRef(null) // ← Track which color to use
 
   const fetchResults = useCallback(async () => {
     try {
@@ -52,9 +53,22 @@ export default function PlayerResults({ gameId, playerName }) {
       const mine = data.results.find((r) => r.name === playerName)
 
       if (mine && messageRef.current === null) {
-        messageRef.current = pickRandom(
-          mine.percentage >= PASS_THRESHOLD ? MOTIVATIONAL_MESSAGES : MENTOR_MESSAGES,
-        )
+        const passed = mine.percentage >= PASS_THRESHOLD
+        const isZero = mine.percentage === 0
+
+        // Pick message based on threshold (green vs yellow/red)
+        messageRef.current = passed 
+          ? pickRandom(MOTIVATIONAL_MESSAGES) 
+          : pickRandom(MENTOR_MESSAGES)
+
+        // Pick card color based on score
+        if (passed) {
+          cardColorRef.current = 'green'
+        } else if (isZero) {
+          cardColorRef.current = 'red'
+        } else {
+          cardColorRef.current = 'yellow'
+        }
       }
 
       setMyResult(mine || null)
@@ -117,6 +131,14 @@ export default function PlayerResults({ gameId, playerName }) {
 
   const passed = myResult.percentage >= PASS_THRESHOLD
 
+  // Determine card class
+  let cardClass = styles.motivationCard
+  if (!passed && myResult.percentage === 0) {
+    cardClass = styles.redCard
+  } else if (!passed) {
+    cardClass = styles.mentorCard
+  }
+
   return (
     <div className={styles.container}>
       <Brand />
@@ -130,7 +152,7 @@ export default function PlayerResults({ gameId, playerName }) {
         </p>
       </div>
 
-      <div className={passed ? styles.motivationCard : styles.mentorCard}>
+      <div className={cardClass}>
         {messageRef.current}
         {!passed && (
           <a
@@ -139,7 +161,7 @@ export default function PlayerResults({ gameId, playerName }) {
             rel="noopener noreferrer"
             className={styles.mentorLink}
           >
-            👉 Book a mentor session now
+            👉 Book a session with a mentor
           </a>
         )}
       </div>
