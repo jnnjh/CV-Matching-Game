@@ -1,39 +1,53 @@
 .container {
   max-width: 550px;
-  margin: 24px auto;
-  padding: 24px 28px;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  border: 1px solid #f0f2f5;
+  margin: 2rem auto;
+  padding: 1.75rem 2rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.icon {
+  font-size: 2rem;
 }
 
 .title {
-  font-size: 22px;
-  font-weight: 600;
-  color: #2c3e50;
-  margin-bottom: 6px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 0.75rem 0;
 }
 
 .instructions {
-  color: #666;
-  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.95rem;
   line-height: 1.6;
-  margin-bottom: 20px;
-  padding: 12px 16px;
-  background: #f8f9fa;
-  border-radius: 10px;
+  margin-bottom: 1.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid #a78bfa;
 }
 
 .hint {
-  font-size: 13px;
-  color: #999;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 1.25rem;
 }
 
 .field {
@@ -43,85 +57,97 @@
 
 .label {
   font-weight: 600;
-  margin-bottom: 6px;
-  color: #444;
-  font-size: 14px;
+  margin-bottom: 0.4rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
 }
 
 .required {
-  color: #e74c3c;
+  color: #f472b6;
 }
 
 .textarea {
-  padding: 12px 14px;
-  border: 2px solid #e8ecf1;
-  border-radius: 10px;
-  font-size: 15px;
-  font-family: inherit;
+  padding: 0.75rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: var(--font-family);
   resize: vertical;
-  transition: border-color 0.2s ease;
-  background: #fafbfc;
-  line-height: 1.6;
   min-height: 120px;
+  transition: border-color 0.2s ease;
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  line-height: 1.6;
 }
 
 .textarea:focus {
   outline: none;
-  border-color: #4a90d9;
-  background: #ffffff;
-  box-shadow: 0 0 0 4px rgba(74, 144, 217, 0.08);
+  border-color: #a78bfa;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.15);
 }
 
 .textarea::placeholder {
-  color: #bbb;
-  font-style: italic;
+  color: rgba(255, 255, 255, 0.25);
 }
 
 .charCount {
   text-align: right;
-  font-size: 12px;
-  color: #bbb;
-  margin-top: 4px;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 0.25rem;
 }
 
 .error {
-  background: #fde8e8;
-  color: #c0392b;
-  padding: 10px 14px;
-  border-radius: 10px;
-  font-size: 14px;
+  background: rgba(244, 67, 54, 0.15);
+  color: #f87171;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  border: 1px solid rgba(244, 67, 54, 0.2);
 }
 
 .success {
-  background: #e8f5e9;
-  color: #2e7d32;
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 15px;
+  background: rgba(52, 211, 153, 0.12);
+  color: #6ee7b7;
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
   text-align: center;
+  font-weight: 600;
+  border: 1px solid rgba(52, 211, 153, 0.2);
 }
 
 .button {
-  padding: 12px 24px;
-  background: #4a90d9;
-  color: white;
+  width: 100%;
+  padding: 0.85rem;
+  background: white;
+  color: #0241a0;
   border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
+  border-radius: 50px;
+  font-size: 1rem;
+  font-weight: 700;
   transition: all 0.2s ease;
-  margin-top: 4px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
 }
 
 .button:hover:not(:disabled) {
-  background: #357abd;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(74, 144, 217, 0.25);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  background: #f0ebf5;
 }
 
 .button:disabled {
-  background: #d0d5dd;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.3);
   cursor: not-allowed;
   transform: none;
+  box-shadow: none;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 600px) {
+  .container { padding: 1.25rem; }
+  .title { font-size: 1.2rem; }
 }

@@ -3,97 +3,78 @@ import styles from './LobbyPlayerCard.module.css'
 
 export function LobbyPlayerCard({
   player,
-  isCurrentPlayer = false,
-  isReady = false,
-  canEdit = false,
+  isCurrentPlayer,
+  isReady,
+  canEdit,
   onRename,
 }) {
   const [isEditing, setIsEditing] = useState(false)
   const [newName, setNewName] = useState(player.name)
-  const [saving, setSaving] = useState(false)
-  const [editError, setEditError] = useState(null)
 
-  const handleSave = async () => {
-    const trimmed = newName.trim()
-
-    if (!trimmed || trimmed === player.name) {
-      setIsEditing(false)
-      setEditError(null)
-      return
+  const handleRename = async () => {
+    if (newName.trim() && newName !== player.name) {
+      await onRename(newName.trim())
     }
-
-    try {
-      setSaving(true)
-      setEditError(null)
-      await onRename(trimmed)
-      setIsEditing(false)
-    } catch (err) {
-      setEditError(err.message)
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  const handleCancel = () => {
-    setNewName(player.name)
     setIsEditing(false)
-    setEditError(null)
   }
 
   return (
     <div className={styles.card}>
       <div className={styles.avatar}>
         {player.photo_url ? (
-          <img src={player.photo_url} alt={player.name} className={styles.avatarImage} />
+          <img
+            src={player.photo_url}
+            alt={player.name}
+            className={styles.avatarImage}
+          />
         ) : (
-          player.name.charAt(0).toUpperCase()
+          <div className={styles.avatarPlaceholder}>
+            {player.name.charAt(0).toUpperCase()}
+          </div>
         )}
       </div>
 
       <div className={styles.info}>
-        {isEditing ? (
-          <div className={styles.editRow}>
+        <div className={styles.nameRow}>
+          {isEditing && canEdit ? (
             <input
-              className={styles.editInput}
+              type="text"
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              maxLength={30}
-              disabled={saving}
-              //autoFocus
+              onBlur={handleRename}
+              onKeyDown={(e) => e.key === 'Enter' && handleRename()}
+              className={styles.nameInput}
+              autoFocus
             />
-            <button onClick={handleSave} disabled={saving}>
-              {saving ? 'Saving...' : 'Save'}
-            </button>
-            <button onClick={handleCancel} disabled={saving}>
-              Cancel
-            </button>
-          </div>
-        ) : (
-          <p className={styles.name}>
-            {player.name}
-
-            {player.is_host && <span className={styles.host}> 👑 Host</span>}
-
-            {isCurrentPlayer && <span className={styles.you}> (you)</span>}
-
-            {canEdit && isCurrentPlayer && (
-              <button className={styles.editButton} onClick={() => setIsEditing(true)}>
-                ✏️ Edit
-              </button>
-            )}
-          </p>
-        )}
-
-        {editError && <p className={styles.editError}>❌ {editError}</p>}
+          ) : (
+            <p className={styles.name}>
+              {player.name}
+              {player.is_host && <span className={styles.hostBadge}>👑 Host</span>}
+              {isCurrentPlayer && <span className={styles.youBadge}> (you)</span>}
+            </p>
+          )}
+        </div>
 
         <p className={styles.status}>
           {isReady ? (
-            <span className={styles.ready}>✅ Ready to play</span>
+            <span className={styles.statusReady}>✅ Ready</span>
           ) : (
-            <span className={styles.waiting}>⏳ Waiting for statement...</span>
+            <span className={styles.statusWaiting}>
+              <span className={styles.hourglass}>⏳</span> Waiting for statement
+            </span>
           )}
         </p>
       </div>
+
+      {canEdit && !isEditing && (
+        <button
+          className={styles.editButton}
+          onClick={() => setIsEditing(true)}
+          aria-label="Edit name"
+        >
+          ✏️
+        </button>
+      )}
     </div>
   )
 }

@@ -1,66 +1,201 @@
+/* ========================================
+   CVVHO — Player Results Page
+   ======================================== */
+
 .container {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 1.5rem;
-  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(145deg, #072e73 0%, #0241a0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow effect */
+.container::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+/* Dot grid */
+.container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
 }
 
 .title {
-  margin-bottom: 1.25rem;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 0 40px rgba(167, 139, 250, 0.2);
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  margin-bottom: 1.5rem;
 }
 
+/* -------- Score Card -------- */
 .scoreCard {
-  background: #f4f4ff;
-  border-radius: 12px;
-  padding: 1.25rem;
-  margin-bottom: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
 }
 
 .statement {
-  color: #555;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
   font-style: italic;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.75rem;
+  line-height: 1.6;
+  border-left: 3px solid rgba(167, 139, 250, 0.4);
+  padding-left: 1rem;
 }
 
 .percentage {
-  font-size: 2.4rem;
-  font-weight: 800;
-  color: #646cff;
+  font-size: 3.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #a78bfa, #6c3cb2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0;
+  line-height: 1.1;
 }
 
 .detail {
-  color: #777;
+  color: rgba(255, 255, 255, 0.4);
   font-size: 0.9rem;
   margin: 0.25rem 0 0;
 }
 
+/* -------- Message Cards (VIBRANT) -------- */
 .motivationCard {
-  background: #e1f5ee;
-  color: #085041;
-  border-radius: 12px;
-  padding: 1rem;
-  font-weight: 500;
+  background: rgba(52, 211, 153, 0.2);
+  border: 2px solid #34d399;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  color: #6ee7b7;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-align: center;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  box-shadow: 0 0 30px rgba(52, 211, 153, 0.15);
 }
 
 .mentorCard {
-  background: #faeeda;
-  color: #633806;
-  border-radius: 12px;
-  padding: 1rem;
-  font-weight: 500;
+  background: rgba(251, 191, 36, 0.2);
+  border: 2px solid #fbbf24;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  color: #fcd34d;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-align: center;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  box-shadow: 0 0 30px rgba(251, 191, 36, 0.15);
 }
 
+.mentorLink {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1.25rem;
+  background: #fbbf24;
+  color: #1a1a2e;
+  font-weight: 700;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.mentorLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.3);
+}
+
+/* -------- Waiting -------- */
 .waiting {
-  color: #999;
+  color: rgba(255, 255, 255, 0.3);
   font-size: 0.85rem;
-  margin-top: 1.25rem;
+  margin-top: 0.5rem;
+  position: relative;
+  z-index: 1;
+  text-align: center;
 }
 
+/* -------- Loading -------- */
+.loading {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* -------- Error -------- */
 .error {
-  background: #ffecec;
-  color: #c0392b;
-  border-radius: 8px;
+  background: rgba(244, 67, 54, 0.15);
+  color: #f87171;
   padding: 0.75rem 1rem;
+  border-radius: 12px;
   margin-bottom: 1rem;
+  font-size: 0.9rem;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  text-align: center;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .container { padding: 1.5rem 1rem; }
+  .title { font-size: 2rem; }
+  .scoreCard { padding: 1.5rem; }
+  .percentage { font-size: 2.8rem; }
+  .statement { font-size: 1rem; }
+  .motivationCard, .mentorCard { font-size: 0.95rem; padding: 1rem; }
+}
+
+@media (max-width: 400px) {
+  .title { font-size: 1.6rem; }
+  .scoreCard { padding: 1.25rem; }
+  .percentage { font-size: 2.2rem; }
+  .statement { font-size: 0.9rem; }
+  .motivationCard, .mentorCard { font-size: 0.85rem; }
 }

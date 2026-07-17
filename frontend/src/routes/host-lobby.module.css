@@ -1,0 +1,388 @@
+/* ========================================
+   CVVHO — Host Lobby Page
+   ======================================== */
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(145deg, #072e73 0%, #0241a0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow effect */
+.container::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+/* Dot grid */
+.container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 0 40px rgba(167, 139, 250, 0.2);
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Game Code & QR Section */
+.gameInfo {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.25);
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  margin-bottom: 2rem;
+}
+
+.gameCodeSection {
+  text-align: center;
+}
+
+.codeLabel {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.25rem;
+}
+
+.gameCode {
+  font-size: 2rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 2px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.25rem 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.qrSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.qrLabel {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.copyButton {
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.4rem 1rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.copyButton:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.copyButtonCopied {
+  background: rgba(52, 211, 153, 0.2);
+  color: #6ee7b7;
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
+/* Divider */
+.divider {
+  width: 100%;
+  max-width: 600px;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin: 0 0 2rem 0;
+}
+
+/* Players Section */
+.playersSection {
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+}
+
+.playersTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.playerList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.playerRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 0.75rem;
+  width: 100%;
+}
+
+/* -------- Square Cards for Host Lobby -------- */
+.hostPlayerCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.2s ease;
+  text-align: center;
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.hostPlayerCard:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hostAvatar {
+  flex-shrink: 0;
+}
+
+.hostAvatarImage {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.hostAvatarPlaceholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(167, 139, 250, 0.3);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.hostPlayerName {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
+  text-align: center;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hostBadge {
+  font-size: 0.6rem;
+  margin-left: 0.1rem;
+}
+
+.hostPlayerStatus {
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+}
+
+.hostStatusReady {
+  color: #6ee7b7;
+}
+
+.hostStatusWaiting {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.hostHourglass {
+  display: inline-block;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Custom scrollbar */
+.playerList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.playerList::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.playerList::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.3);
+  border-radius: 4px;
+}
+
+.empty {
+  text-align: center;
+  padding: 2rem 1.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+.empty p {
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0.25rem 0;
+}
+
+.waitingMessage {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.fullMessage {
+  text-align: center;
+  color: #a78bfa;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  background: rgba(167, 139, 250, 0.08);
+  border-radius: 12px;
+  border: 1px solid rgba(167, 139, 250, 0.1);
+  margin-bottom: 0.5rem;
+}
+
+.startButton {
+  width: 100%;
+  padding: 0.85rem;
+  background: white;
+  color: #0241a0;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  margin-top: 0.5rem;
+}
+
+.startButton:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  background: #f0ebf5;
+}
+
+.startButton:disabled {
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .container { padding: 1.5rem 1rem; }
+  .title { font-size: 2rem; }
+  .gameInfo { flex-direction: column; padding: 1.5rem; gap: 1rem; }
+  .gameCode { font-size: 1.5rem; }
+  .playersTitle { font-size: 1rem; }
+  .startButton { font-size: 1rem; }
+  .playerRow {
+    grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
+    gap: 0.5rem;
+  }
+  .playerList {
+    max-height: 180px;
+  }
+  .hostPlayerCard .avatarImage,
+  .hostPlayerCard .avatarPlaceholder {
+    width: 22px !important;
+    height: 22px !important;
+    font-size: 0.6rem !important;
+  }
+  .hostPlayerCard .name {
+    font-size: 0.6rem !important;
+  }
+  .hostPlayerCard .status {
+    font-size: 0.5rem !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .title { font-size: 1.6rem; }
+  .gameInfo { padding: 1rem; }
+  .gameCode { font-size: 1.2rem; }
+  .playerRow {
+    grid-template-columns: repeat(auto-fit, minmax(55px, 1fr));
+    gap: 0.4rem;
+  }
+  .hostPlayerCard .avatarImage,
+  .hostPlayerCard .avatarPlaceholder {
+    width: 18px !important;
+    height: 18px !important;
+    font-size: 0.5rem !important;
+  }
+  .hostPlayerCard .name {
+    font-size: 0.5rem !important;
+  }
+  .hostPlayerCard .status {
+    font-size: 0.45rem !important;
+  }
+}

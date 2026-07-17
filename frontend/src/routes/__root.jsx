@@ -13,6 +13,10 @@ function RootLayout() {
         <Outlet />
       </main>
 
+      <footer className={styles.footer}>
+        <p>© {new Date().getFullYear()} CVVHO. All rights reserved.</p>
+      </footer>
+
       <TanStackRouterDevtools />
     </>
   )

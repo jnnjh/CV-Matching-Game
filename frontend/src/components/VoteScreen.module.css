@@ -1,113 +1,289 @@
+/* ========================================
+   CVVHO — Vote Screen (Player Voting)
+   ======================================== */
+
 .container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
-  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  background: linear-gradient(145deg, #072e73 0%, #0241a0 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow effect */
+.container::before {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.12), transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+/* Dot grid */
+.container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
 }
 
 .title {
-  font-size: 1.75rem;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 0 40px rgba(167, 139, 250, 0.2);
+  position: relative;
+  z-index: 1;
+  text-align: center;
   margin-bottom: 0.25rem;
 }
 
 .roundLabel {
-  color: #888;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.5);
   margin-bottom: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
 }
 
 .statement {
-  background: #f5f5f5;
-  border-left: 4px solid #646cff;
-  border-radius: 8px;
-  padding: 1.25rem 1.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
   margin: 0 0 2rem 0;
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   font-style: italic;
-  text-align: left;
+  color: white;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
+.statement::before {
+  content: '"';
+  font-size: 2rem;
+  color: #a78bfa;
+  opacity: 0.5;
+}
+
+.statement::after {
+  content: '"';
+  font-size: 2rem;
+  color: #a78bfa;
+  opacity: 0.5;
+}
+
+/* -------- Progress Bar -------- */
+.progressContainer {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.progressLabel {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.3rem;
+}
+
+.progressTrack {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #a78bfa, #6c3cb2);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+/* -------- Options -------- */
 .options {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  width: 100%;
+  max-width: 600px;
   margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .option {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border: 2px solid #ddd;
-  border-radius: 10px;
-  background: white;
+  padding: 0.85rem 1.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition:
-    border-color 0.15s,
-    background 0.15s;
+  transition: all 0.2s ease;
 }
 
 .option:hover:not(:disabled) {
-  border-color: #646cff;
+  border-color: rgba(167, 139, 250, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
 }
 
 .optionSelected {
-  border-color: #646cff;
-  background: #eef0ff;
-  font-weight: 600;
+  border-color: #a78bfa;
+  background: rgba(167, 139, 250, 0.12);
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 0 20px rgba(167, 139, 250, 0.1);
 }
 
 .optionAvatar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 2.2rem;
+  height: 2.2rem;
   border-radius: 50%;
-  background: #646cff;
-  color: white;
+  background: rgba(167, 139, 250, 0.2);
+  color: #a78bfa;
   font-weight: 700;
+  font-size: 0.85rem;
   flex-shrink: 0;
+  transition: all 0.2s ease;
 }
 
+.optionSelected .optionAvatar {
+  background: rgba(167, 139, 250, 0.3);
+  color: white;
+}
+
+/* -------- Submit Button -------- */
 .submitButton {
   width: 100%;
-  padding: 0.75rem;
+  max-width: 600px;
+  padding: 0.85rem;
+  background: white;
+  color: #0241a0;
   border: none;
-  border-radius: 10px;
-  background: #646cff;
-  color: white;
-  font-size: 1.05rem;
-  font-weight: 600;
+  border-radius: 50px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  background: #f0ebf5;
 }
 
 .submitButton:disabled {
-  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.3);
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.error {
-  background: #ffecec;
-  color: #c0392b;
-  border-radius: 8px;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
+/* -------- Status Messages -------- */
+.ownStatement {
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  color: #c4b5fd;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .success {
-  background: #eaffea;
-  color: #1e7d32;
-  border-radius: 8px;
-  padding: 1rem;
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  color: #6ee7b7;
   font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
-.ownStatement {
-  background: #eef0ff;
-  color: #4338ca;
-  border-radius: 8px;
-  padding: 1rem;
-  font-weight: 600;
+.error {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f87171;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+}
+
+/* -------- Loading -------- */
+.loading {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .container { padding: 1.5rem 1rem; }
+  .title { font-size: 2rem; }
+  .statement { font-size: 1.1rem; padding: 1rem 1.25rem; }
+  .option { padding: 0.7rem 1rem; font-size: 0.95rem; }
+  .optionAvatar { width: 1.8rem; height: 1.8rem; font-size: 0.75rem; }
+  .submitButton { font-size: 1rem; }
+  .progressLabel { font-size: 0.75rem; }
+}
+
+@media (max-width: 400px) {
+  .title { font-size: 1.6rem; }
+  .statement { font-size: 1rem; padding: 0.75rem 1rem; }
 }
