@@ -14,6 +14,7 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
   const [advancing, setAdvancing] = useState(false)
   const [finished, setFinished] = useState(false)
   const [removingId, setRemovingId] = useState(null)
+  const [isLastRound, setIsLastRound] = useState(false)
 
   const fetchData = useCallback(async () => {
     try {
@@ -28,6 +29,11 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
 
       const roundData = await getCurrentRound(gameId)
       setRound(roundData)
+      
+      // Check if this is the last round (no more statements after this)
+      // If there are no more rounds, this is the last one
+      setIsLastRound(progressData.isLastRound || false)
+      
       setError(null)
     } catch (err) {
       setError(err.message)
@@ -166,7 +172,9 @@ export default function HostRoundScreen({ gameId, onGameFinished }) {
         {advancing
           ? 'Loading...'
           : progress?.allVotesIn
-            ? 'Next Statement →'
+            ? isLastRound
+              ? '🏁 End Game'
+              : 'Next Statement →'
             : '⏳ Waiting for votes...'}
       </button>
     </div>
