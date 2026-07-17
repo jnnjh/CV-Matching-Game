@@ -130,6 +130,24 @@
   box-shadow: 0 0 30px rgba(251, 191, 36, 0.15);
 }
 
+.mentorLink {
+  display: inline-block;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1.25rem;
+  background: #fbbf24;
+  color: #1a1a2e;
+  font-weight: 700;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.mentorLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.3);
+}
+
 /* -------- Waiting -------- */
 .waiting {
   color: rgba(255, 255, 255, 0.3);

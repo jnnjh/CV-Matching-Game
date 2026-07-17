@@ -8,29 +8,29 @@ const POLL_INTERVAL_MS = 4000
 const PASS_THRESHOLD = 51
 
 const MOTIVATIONAL_MESSAGES = [
-  'Your story shines through! Keep being unmistakably you. 🌟',
-  'People really know you. That is a superpower! 💪',
-  'Great statements leave a mark, and yours clearly did! 🔥',
-  'Authenticity wins games. Well played! 🏅',
-  'You made an impression that stuck. Amazing job! 🎉',
-  'You told your story and everyone recognized it. That is real presence! 👏',
-  'Memorable, genuine, unmistakably you. Keep it up! 🙌',
-  'Your voice comes through loud and clear. Never lose that! 📣',
-  'The room knows who you are. That is how a strong personal story works! 🏆',
-  'You did not just play the game, you owned your story! 🚀',
+  'Your story shines through! Keep being unmistakably you.',
+  'People really know you — that is a superpower!',
+  'Great statements leave a mark, and yours clearly did!',
+  'Authenticity wins games. Well played!',
+  'You made an impression that stuck. Amazing job!',
+  'You told your story and everyone recognized it. That is real presence!',
+  'Memorable, genuine, unmistakably you. Keep it up!',
+  'Your voice comes through loud and clear. Never lose that!',
+  'The room knows who you are. That is how a strong personal story works!',
+  'You did not just play the game, you owned your story!',
 ]
 
 const MENTOR_MESSAGES = [
-  'Your story deserves to be heard louder. Book a session with a mentor to sharpen it! 📚',
-  'A little coaching goes a long way. Book with a mentor and level up your personal statement! 🚀',
-  'Not everyone guessed you this time. A mentor can help your story stand out. Book a session! 🤝',
-  'Time to polish that personal brand. Book with a mentor and make it unforgettable! ✨',
-  'Your story has potential, it just needs a spotlight. A mentor can help you find it. Book a session! 💡',
-  'Hidden gems need a little polish. Book a mentor session and let yours shine! 💎',
-  'Flying under the radar? A mentor can help your story land. Book a session! 🛬',
-  'Every great story gets an editor. Book time with a mentor and sharpen yours! ✏️',
-  'You have a story worth telling, a mentor can help you tell it better. Book a session! 🎯',
-  'Blending in is easy, standing out is a skill. Learn it with a mentor, book a session! 🌱',
+  'Your story deserves to be heard louder. Book a session with a mentor to sharpen it!',
+  'A little coaching goes a long way. Book a session with a mentor and level up your personal statement!',
+  'Not everyone guessed you this time. A mentor can help your story stand out. Book a session!',
+  'Time to polish that personal brand. Book a session with a mentor and make it unforgettable!',
+  'Your story has potential, it just needs a spotlight. A mentor can help you find it. Book a session!',
+  'Hidden gems need a little polish. Book a mentor session and let yours shine!',
+  'Flying under the radar? A mentor can help your story land. Book a session!',
+  'Every great story gets an editor. Book time with a mentor and sharpen yours!',
+  'You have a story worth telling, a mentor can help you tell it better. Book a session!',
+  'Blending in is easy, standing out is a skill. Learn it with a mentor — book a session!',
 ]
 
 function pickRandom(messages) {
@@ -132,6 +132,16 @@ export default function PlayerResults({ gameId, playerName }) {
 
       <div className={passed ? styles.motivationCard : styles.mentorCard}>
         {messageRef.current}
+        {!passed && (
+          <a
+            href="https://pairscheduling.netlify.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.mentorLink}
+          >
+            👉 Book a mentor session now
+          </a>
+        )}
       </div>
 
       <p className={styles.waiting}>Waiting for the host to end the game...</p>
