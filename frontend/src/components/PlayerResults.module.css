@@ -152,7 +152,7 @@
   display: inline-block;
   margin-top: 0.75rem;
   padding: 0.5rem 1.25rem;
-  background: #fbbf24;
+  background: #6c3cb2;
   color: #1a1a2e;
   font-weight: 700;
   border-radius: 50px;
@@ -163,7 +163,8 @@
 
 .mentorLink:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(251, 191, 36, 0.3);
+  box-shadow: 0 4px 16px rgba(108, 60, 178, 0.4);
+  background: #5a2ea0;
 }
 
 /* -------- Waiting -------- */
