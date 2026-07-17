@@ -27,6 +27,7 @@ function HostLobbyPage() {
   const [players, setPlayers] = useState([])
   const [submissionStatusMap, setSubmissionStatusMap] = useState({})
   const [starting, setStarting] = useState(false)
+  const [copied, setCopied] = useState(false)  // ← ADD THIS
 
   const autoStartTriggered = useRef(false)
 
@@ -34,7 +35,6 @@ function HostLobbyPage() {
     try {
       const data = await getLobbyPlayers(search.gameId)
       setPlayers(data.players)
-
       const statusMap = await getSubmissionStatusMap(search.gameCode, data.players)
       setSubmissionStatusMap(statusMap)
     } catch (err) {
@@ -67,6 +67,16 @@ function HostLobbyPage() {
     }
   }, [navigate, search.gameId, search.gameCode])
 
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(joinUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 3000)
+    } catch (err) {
+      console.error('Failed to copy:', err)
+    }
+  }
+
   const allReady = players.length > 0 && players.every((player) => submissionStatusMap[player.id])
 
   useEffect(() => {
@@ -95,10 +105,10 @@ function HostLobbyPage() {
           <QRCodeCanvas value={joinUrl} size={140} />
           <p className={styles.qrLabel}>Scan to join</p>
           <button
-            onClick={() => navigator.clipboard.writeText(joinUrl)}
-            className={styles.copyButton}
+            onClick={handleCopyLink}
+            className={`${styles.copyButton} ${copied ? styles.copyButtonCopied : ''}`}
           >
-            📋 Copy Join Link
+            {copied ? '✅ Copied!' : '📋 Copy Join Link'}
           </button>
         </div>
       </div>
