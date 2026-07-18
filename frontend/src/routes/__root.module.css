@@ -18,16 +18,16 @@
   background: rgba(7, 46, 115, 0.9);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.8);
+  border-top: 1px solid rgba(255,255,255,0.05);
   font-size: 0.8rem;
   letter-spacing: 0.5px;
   width: 100%;
   margin-top: auto;
+}
 
-  transition:
-    background 0.3s ease,
-    color 0.3s ease;
+.footer p {
+  margin: 0;
+  color: #ffffff;
 }
 
 .footer:hover {
