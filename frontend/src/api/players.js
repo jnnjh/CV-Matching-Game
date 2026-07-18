@@ -1,69 +1,60 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
+async function request(url, options = {}) {
+  const response = await fetch(url, options)
+  const data = await response.json()
+
+  if (!response.ok) {
+    throw new Error(data.error || 'Request failed')
+  }
+
+  return data
+}
+
 /**
  * Join a game as a player
  * @param {string} gameCode - The game code
  * @param {string} name - Player's name
- * @returns {Promise} - Response from the server
+ * @returns {Promise}
  */
-export async function joinGame(gameCode, name) {
-  const response = await fetch(`${API_URL}/api/players`, {
+export function joinGame(gameCode, name) {
+  return request(`${API_URL}/api/players`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ gameCode, name }),
+    body: JSON.stringify({
+      gameCode,
+      name,
+    }),
   })
-
-  const data = await response.json()
-
-  if (!response.ok) {
-    throw new Error(data.error || 'Failed to join game')
-  }
-
-  return data
 }
 
 /**
  * Update a player's name (only allowed before the game starts)
  * @param {number} playerId - The player's ID
  * @param {string} name - The new name
- * @returns {Promise} - Response from the server
+ * @returns {Promise}
  */
-export async function updatePlayerName(playerId, name) {
-  const response = await fetch(`${API_URL}/api/players/${playerId}`, {
+export function updatePlayerName(playerId, name) {
+  return request(`${API_URL}/api/players/${playerId}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ name }),
+    body: JSON.stringify({
+      name,
+    }),
   })
-
-  const data = await response.json()
-
-  if (!response.ok) {
-    throw new Error(data.error || 'Failed to update name')
-  }
-
-  return data
 }
 
 /**
  * Remove a player from a game together with their statement and votes
- * (host control, allowed until the game is finished)
- * @param {number} playerId - The player's ID
- * @returns {Promise} - { success, removed, playerId, gameId, round, status }
+ * @param {number} playerId
+ * @returns {Promise}
  */
-export async function removePlayer(playerId) {
-  const response = await fetch(`${API_URL}/api/players/${playerId}`, {
+export function removePlayer(playerId) {
+  return request(`${API_URL}/api/players/${playerId}`, {
     method: 'DELETE',
   })
-
-  const data = await response.json()
-
-  if (!response.ok) {
-    throw new Error(data.error || 'Failed to remove player')
-  }
-
-  return data
 }

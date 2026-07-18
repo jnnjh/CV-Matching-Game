@@ -11,11 +11,22 @@ export function LobbyPlayerCard({
   const [isEditing, setIsEditing] = useState(false)
   const [newName, setNewName] = useState(player.name)
 
-  const handleRename = async () => {
-    if (newName.trim() && newName !== player.name) {
-      await onRename(newName.trim())
+  async function handleRename() {
+    const trimmedName = newName.trim()
+
+    if (!trimmedName || trimmedName === player.name) {
+      setIsEditing(false)
+      return
     }
+
+    await onRename(trimmedName)
     setIsEditing(false)
+  }
+
+  function handleKeyDown(event) {
+    if (event.key === 'Enter') {
+      handleRename()
+    }
   }
 
   return (
@@ -40,17 +51,20 @@ export function LobbyPlayerCard({
             <input
               type="text"
               value={newName}
-              onChange={(e) => setNewName(e.target.value)}
+              onChange={(event) => setNewName(event.target.value)}
               onBlur={handleRename}
-              onKeyDown={(e) => e.key === 'Enter' && handleRename()}
+              onKeyDown={handleKeyDown}
               className={styles.nameInput}
-              autoFocus
             />
           ) : (
             <p className={styles.name}>
               {player.name}
-              {player.is_host && <span className={styles.hostBadge}>👑 Host</span>}
-              {isCurrentPlayer && <span className={styles.youBadge}> (you)</span>}
+              {player.is_host && (
+                <span className={styles.hostBadge}>👑 Host</span>
+              )}
+              {isCurrentPlayer && (
+                <span className={styles.youBadge}> (you)</span>
+              )}
             </p>
           )}
         </div>
@@ -60,7 +74,9 @@ export function LobbyPlayerCard({
             <span className={styles.statusReady}>✅ Ready</span>
           ) : (
             <span className={styles.statusWaiting}>
-              <span className={styles.hourglass}>⏳</span> Waiting for statement
+              <span className={styles.hourglass}>⏳</span>
+              {' '}
+              Waiting for statement
             </span>
           )}
         </p>
@@ -68,6 +84,7 @@ export function LobbyPlayerCard({
 
       {canEdit && !isEditing && (
         <button
+          type="button"
           className={styles.editButton}
           onClick={() => setIsEditing(true)}
           aria-label="Edit name"

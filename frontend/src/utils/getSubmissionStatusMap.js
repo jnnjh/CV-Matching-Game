@@ -1,16 +1,17 @@
 import { getPlayerSubmissionStatus } from '../api/statements'
 
 export async function getSubmissionStatusMap(gameCode, players) {
-  const statusMap = {}
+  const submissions = await Promise.all(
+    players.map(async (player) => {
+      try {
+        const data = await getPlayerSubmissionStatus(gameCode, player.name)
 
-  for (const player of players) {
-    try {
-      const data = await getPlayerSubmissionStatus(gameCode, player.name)
-      statusMap[player.id] = data.submitted || false
-    } catch {
-      statusMap[player.id] = false
-    }
-  }
+        return [player.id, data.submitted || false]
+      } catch {
+        return [player.id, false]
+      }
+    }),
+  )
 
-  return statusMap
+  return Object.fromEntries(submissions)
 }

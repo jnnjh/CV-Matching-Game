@@ -9,6 +9,8 @@ import styles from './host-lobby.module.css'
 
 const MIN_PLAYERS = 3
 const MAX_PLAYERS = 10
+const PLAYERS_PER_ROW = 5
+const POLL_INTERVAL = 5000
 
 export const Route = createFileRoute('/host-lobby')({
   component: HostLobbyPage,
@@ -33,8 +35,14 @@ function HostLobbyPage() {
   const fetchPlayers = useCallback(async () => {
     try {
       const data = await getLobbyPlayers(search.gameId)
+
       setPlayers(data.players)
-      const statusMap = await getSubmissionStatusMap(search.gameCode, data.players)
+
+      const statusMap = await getSubmissionStatusMap(
+        search.gameCode,
+        data.players,
+      )
+
       setSubmissionStatusMap(statusMap)
     } catch (err) {
       console.error('Failed to fetch players:', err)
@@ -43,14 +51,18 @@ function HostLobbyPage() {
 
   useEffect(() => {
     fetchPlayers()
-    const interval = setInterval(fetchPlayers, 5000)
+
+    const interval = setInterval(fetchPlayers, POLL_INTERVAL)
+
     return () => clearInterval(interval)
   }, [fetchPlayers])
 
   const handleStartGame = useCallback(async () => {
     try {
       setStarting(true)
+
       await startGame(search.gameId)
+
       navigate({
         to: '/host-round/$gameId',
         params: {
@@ -66,7 +78,7 @@ function HostLobbyPage() {
     }
   }, [navigate, search.gameId, search.gameCode])
 
-  const handleCopyLink = async () => {
+  async function handleCopyLink() {
     try {
       await navigator.clipboard.writeText(joinUrl)
       setCopied(true)
@@ -76,10 +88,17 @@ function HostLobbyPage() {
     }
   }
 
-  const allReady = players.length > 0 && players.every((player) => submissionStatusMap[player.id])
+  const allReady =
+    players.length > 0 &&
+    players.every((player) => submissionStatusMap[player.id])
 
   useEffect(() => {
-    if (players.length === MAX_PLAYERS && allReady && !autoStartTriggered.current && !starting) {
+    if (
+      players.length === MAX_PLAYERS &&
+      allReady &&
+      !autoStartTriggered.current &&
+      !starting
+    ) {
       autoStartTriggered.current = true
       handleStartGame()
     }
@@ -87,11 +106,14 @@ function HostLobbyPage() {
 
   const canStart = players.length >= MIN_PLAYERS && !starting
 
-  // Split players into rows of 5
-  const rows = []
-  for (let i = 0; i < players.length; i += 5) {
-    rows.push(players.slice(i, i + 5))
-  }
+  const rows = Array.from(
+    { length: Math.ceil(players.length / PLAYERS_PER_ROW) },
+    (_, index) =>
+      players.slice(
+        index * PLAYERS_PER_ROW,
+        (index + 1) * PLAYERS_PER_ROW,
+      ),
+  )
 
   return (
     <div className={styles.container}>
@@ -99,7 +121,6 @@ function HostLobbyPage() {
 
       <h1 className={styles.title}>👑 Host Lobby</h1>
 
-      {/* Game Code & QR Section */}
       <div className={styles.gameInfo}>
         <div className={styles.gameCodeSection}>
           <p className={styles.codeLabel}>Game Code</p>
@@ -108,8 +129,11 @@ function HostLobbyPage() {
 
         <div className={styles.qrSection}>
           <QRCodeCanvas value={joinUrl} size={140} />
+
           <p className={styles.qrLabel}>Scan to join</p>
+
           <button
+            type="button"
             onClick={handleCopyLink}
             className={`${styles.copyButton} ${copied ? styles.copyButtonCopied : ''}`}
           >
@@ -120,7 +144,6 @@ function HostLobbyPage() {
 
       <hr className={styles.divider} />
 
-      {/* Players Section */}
       <div className={styles.playersSection}>
         <h2 className={styles.playersTitle}>
           Players ({players.length} / {MAX_PLAYERS})
@@ -136,7 +159,8 @@ function HostLobbyPage() {
             rows.map((row, rowIndex) => (
               <div key={rowIndex} className={styles.playerRow}>
                 {row.map((player) => {
-                  const isReady = submissionStatusMap[player.id] || false
+                  const isReady = Boolean(submissionStatusMap[player.id])
+
                   return (
                     <div key={player.id} className={styles.hostPlayerCard}>
                       <div className={styles.hostAvatar}>
@@ -152,16 +176,23 @@ function HostLobbyPage() {
                           </div>
                         )}
                       </div>
+
                       <div className={styles.hostPlayerName}>
                         {player.name}
-                        {player.is_host && <span className={styles.hostBadge}>👑</span>}
+                        {player.is_host && (
+                          <span className={styles.hostBadge}>👑</span>
+                        )}
                       </div>
+
                       <div className={styles.hostPlayerStatus}>
                         {isReady ? (
-                          <span className={styles.hostStatusReady}>✅ Ready</span>
+                          <span className={styles.hostStatusReady}>
+                            ✅ Ready
+                          </span>
                         ) : (
                           <span className={styles.hostStatusWaiting}>
-                            <span className={styles.hostHourglass}>⏳</span> Waiting for statement...
+                            <span className={styles.hostHourglass}>⏳</span>{' '}
+                            Waiting for statement...
                           </span>
                         )}
                       </div>
@@ -175,17 +206,20 @@ function HostLobbyPage() {
 
         {players.length < MIN_PLAYERS && (
           <p className={styles.waitingMessage}>
-            ⏳ Waiting for players... at least {MIN_PLAYERS} are needed to start.
+            ⏳ Waiting for players... at least {MIN_PLAYERS} are needed to
+            start.
           </p>
         )}
 
         {players.length === MAX_PLAYERS && (
           <p className={styles.fullMessage}>
-            🎉 Lobby is full! The game will start automatically once everyone is ready.
+            🎉 Lobby is full! The game will start automatically once everyone is
+            ready.
           </p>
         )}
 
         <button
+          type="button"
           onClick={handleStartGame}
           disabled={!canStart}
           className={styles.startButton}

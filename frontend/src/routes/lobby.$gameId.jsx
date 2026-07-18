@@ -9,6 +9,7 @@ import Brand from '../components/Brand'
 import styles from './lobby.module.css'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+const POLL_INTERVAL = 5000
 
 export const Route = createFileRoute('/lobby/$gameId')({
   component: LobbyPage,
@@ -96,7 +97,7 @@ function LobbyPage() {
     const interval = setInterval(() => {
       fetchPlayers()
       checkGameStatus()
-    }, 5000)
+    }, POLL_INTERVAL)
 
     return () => clearInterval(interval)
   }, [fetchPlayers, checkSubmissionStatus, checkGameStatus])
@@ -135,7 +136,7 @@ function LobbyPage() {
 
   // Check if all players are ready
   const allPlayersReady = players.length > 0 && 
-    players.every((player) => submissionStatusMap[player.id] === true)
+    players.every((player) => submissionStatusMap[player.id])
 
   if (loading && players.length === 0) {
     return (
