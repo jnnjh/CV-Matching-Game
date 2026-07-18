@@ -5,6 +5,10 @@ import VoteScreen from '../components/VoteScreen'
 import { getCurrentRound } from '../api/rounds'
 import { submitVote, getVoteStatus } from '../api/votes'
 
+vi.mock('../components/Brand', () => ({
+  default: () => <div data-testid="brand" />,
+}))
+
 vi.mock('../api/rounds')
 vi.mock('../api/votes')
 

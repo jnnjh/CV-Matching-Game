@@ -4,6 +4,10 @@ import userEvent from '@testing-library/user-event'
 import HostRoundScreen from '../components/HostRoundScreen'
 import * as roundsApi from '../api/rounds'
 
+vi.mock('../components/Brand', () => ({
+  default: () => <div data-testid="brand" />,
+}))
+
 vi.mock('../api/rounds')
 
 const progress = {
@@ -38,7 +42,9 @@ describe('HostRoundScreen', () => {
     render(<HostRoundScreen gameId="1" />)
 
     expect(await screen.findByText(/I once met a llama/)).toBeInTheDocument()
-    expect(screen.getByText(/Votes in: 1 \/ 2/)).toBeInTheDocument()
+    expect(
+      screen.getByText((_, element) => element?.textContent === 'Votes in: 1 / 2')
+    ).toBeInTheDocument()
     expect(screen.getByText('Ana')).toBeInTheDocument()
     expect(screen.getByText('Cy')).toBeInTheDocument()
   })
