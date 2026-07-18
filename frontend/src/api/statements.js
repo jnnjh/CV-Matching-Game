@@ -1,46 +1,43 @@
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 
-/**
- * Submit a CV statement
- * @param {string} gameCode
- * @param {string} playerName
- * @param {string} content
- * @returns {Promise}
- */
-export async function submitStatement(gameCode, playerName, content) {
-  const response = await fetch(`${API_URL}/api/statements`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ gameCode, playerName, content }),
-  })
-
+async function request(url, options = {}) {
+  const response = await fetch(url, options)
   const data = await response.json()
 
   if (!response.ok) {
-    throw new Error(data.error || 'Failed to submit statement')
+    throw new Error(data.error || 'Request failed')
   }
 
   return data
 }
 
 /**
- * Check whether a player has submitted their statement
- * @param {string} gameCode
- * @param {string} playerName
- * @returns {Promise}
+ * Submit a CV statement
  */
-export async function getPlayerSubmissionStatus(gameCode, playerName) {
-  const response = await fetch(
-    `${API_URL}/api/statements/status?gameCode=${gameCode}&playerName=${playerName}`
+export function submitStatement(gameCode, playerName, content) {
+  return request(`${API_URL}/api/statements`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      gameCode,
+      playerName,
+      content,
+    }),
+  })
+}
+
+/**
+ * Check whether a player has submitted their statement
+ */
+export function getPlayerSubmissionStatus(gameCode, playerName) {
+  const params = new URLSearchParams({
+    gameCode,
+    playerName,
+  })
+
+  return request(
+    `${API_URL}/api/statements/status?${params.toString()}`,
   )
-
-  const data = await response.json()
-
-  if (!response.ok) {
-    throw new Error(data.error || 'Failed to fetch submission status')
-  }
-
-  return data
 }
