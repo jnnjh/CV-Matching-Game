@@ -195,3 +195,22 @@ select:focus {
 .mb-4 {
   margin-bottom: 2rem;
 }
+
+/* ---------- Global Interaction ---------- */
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
+}
+
+button:disabled:hover {
+  transform: none;
+}
+
+.card {
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
