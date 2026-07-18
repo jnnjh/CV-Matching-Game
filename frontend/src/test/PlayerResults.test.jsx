@@ -3,6 +3,10 @@ import { render, screen, cleanup } from '@testing-library/react'
 import PlayerResults from '../components/PlayerResults'
 import * as gamesApi from '../api/games'
 
+vi.mock('../components/Brand', () => ({
+  default: () => <div data-testid="brand" />,
+}))
+
 vi.mock('../api/games')
 vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => vi.fn(),
@@ -55,7 +59,9 @@ describe('PlayerResults', () => {
     render(<PlayerResults gameId="1" playerName="Alex" />)
 
     expect(await screen.findByText('25%')).toBeInTheDocument()
-    expect(screen.getByText(/mentor/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: /book a session with a mentor/i }),
+    ).toBeInTheDocument()
   })
 
   it('shows only the current player result, not other players', async () => {
